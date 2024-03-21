@@ -1,2 +1,2 @@
-20,Pobreška cesta 18,"{'lat': 46.554703, 'lng': 15.652826}",21,10,11,2024-03-19 13:29:48
-20,Pobreška cesta 18,"{'lat': 46.554703, 'lng': 15.652826}",21,10,11,2024-03-19 13:29:48
+number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
+20,Pobreška cesta 18,"{'lat': 46.554703, 'lng': 15.652826}",21,8,13,2024-03-21 20:09:38,11.748,69.0,9.846296,44.0,0.0,0.0,0.0,3.0

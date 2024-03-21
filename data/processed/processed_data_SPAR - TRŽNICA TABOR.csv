@@ -1,2 +1,2 @@
-25,Kardeljeva c. 55,"{'lat': 46.542655, 'lng': 15.634329}",20,19,1,2024-03-19 13:28:06
-25,Kardeljeva c. 55,"{'lat': 46.542655, 'lng': 15.634329}",20,19,1,2024-03-19 13:28:06
+number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
+25,Kardeljeva c. 55,"{'lat': 46.542655, 'lng': 15.634329}",20,5,15,2024-03-21 20:05:03,11.748,69.0,9.846296,44.0,0.0,0.0,0.0,3.0

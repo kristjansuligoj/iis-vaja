@@ -1,2 +1,2 @@
-15,Ljubljanska ul. 30-25,"{'lat': 46.548853, 'lng': 15.645591}",20,15,5,2024-03-19 13:30:10
-15,Ljubljanska ul. 30-25,"{'lat': 46.548853, 'lng': 15.645591}",20,15,5,2024-03-19 13:30:10
+number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
+15,Ljubljanska ul. 30-25,"{'lat': 46.548853, 'lng': 15.645591}",20,14,5,2024-03-21 20:02:06,11.748,69.0,9.846296,44.0,0.0,0.0,0.0,3.0

@@ -1,2 +1,2 @@
-8,Razlagova ulica 1,"{'lat': 46.56196, 'lng': 15.650235}",20,3,16,2024-03-19 13:31:33
-8,Razlagova ulica 1,"{'lat': 46.56196, 'lng': 15.650235}",20,3,16,2024-03-19 13:31:33
+number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
+8,Razlagova ulica 1,"{'lat': 46.56196, 'lng': 15.650235}",20,19,1,2024-03-21 20:04:13,11.748,69.0,9.846296,44.0,0.0,0.0,0.0,3.0

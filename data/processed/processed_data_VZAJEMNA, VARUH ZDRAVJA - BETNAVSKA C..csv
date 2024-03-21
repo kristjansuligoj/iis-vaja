@@ -1,2 +1,2 @@
-24,Betnavska c. 83,"{'lat': 46.54199, 'lng': 15.63831}",20,3,17,2024-03-19 13:31:40
-24,Betnavska c. 83,"{'lat': 46.54199, 'lng': 15.63831}",20,3,17,2024-03-19 13:31:40
+number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
+24,Betnavska c. 83,"{'lat': 46.54199, 'lng': 15.63831}",20,11,9,2024-03-21 20:06:41,11.748,69.0,9.846296,44.0,0.0,0.0,0.0,3.0

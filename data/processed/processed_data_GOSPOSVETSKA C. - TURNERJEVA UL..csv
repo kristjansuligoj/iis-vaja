@@ -1,2 +1,2 @@
-1,Gosposvetska cesta 69,"{'lat': 46.562695, 'lng': 15.62935}",22,16,6,2024-03-19 13:30:54
-1,Gosposvetska cesta 69,"{'lat': 46.562695, 'lng': 15.62935}",22,16,6,2024-03-19 13:30:54
+number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
+1,Gosposvetska cesta 69,"{'lat': 46.562695, 'lng': 15.62935}",22,3,19,2024-03-21 20:07:36,11.748,69.0,9.846296,44.0,0.0,0.0,0.0,3.0
