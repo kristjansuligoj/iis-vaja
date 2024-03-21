@@ -2,6 +2,7 @@ import requests
 import openmeteo_requests
 import requests_cache
 import pandas as pd
+from definitions import ROOT_DIR
 from common.common import save_df_to_csv
 from retry_requests import retry
 
@@ -67,7 +68,8 @@ def main():
 
     try:
         weather_data = fetch_weather_data(mb_latitude, mb_longitude)
-        save_df_to_csv('../../data/raw/weather.csv', weather_data)
+        file_path = ROOT_DIR + '/data/raw/weather.csv'
+        save_df_to_csv(file_path, weather_data)
 
     except requests.RequestException as e:
         # If an error occurs during the request, print the error message

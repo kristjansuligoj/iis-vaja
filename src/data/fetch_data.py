@@ -1,5 +1,6 @@
 import requests
 from common.common import save_to_json
+from definitions import ROOT_DIR
 
 
 def main():
@@ -14,7 +15,8 @@ def main():
             # Parse JSON response
             mbajk_data = response.json()
 
-            save_to_json('../../data/raw/mbajk.json', mbajk_data)
+            file_path = ROOT_DIR + '/data/raw/mbajk.json'
+            save_to_json(file_path, mbajk_data)
         else:
             print(f"Failed to fetch data. Status code: {response.status_code}")
 
