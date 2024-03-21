@@ -1,12 +1,12 @@
-name: Fetch MBajk data from API hourly
+name: Fetch weather data from API daily
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
-  fetch_mbajk_data:
+  fetch_weather_data:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,10 +29,10 @@ jobs:
 
     - name: Fetch data
       run: |
-        poetry run python src/data/fetch_data.py
+        poetry run python src/data/fetch_weather_data.py
 
     - name: Upload fetched data
       uses: actions/upload-artifact@v2
       with:
         name: fetched-data
-        path: data/raw/mbajk.json
+        path: data/raw/weather.csv
