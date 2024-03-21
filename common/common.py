@@ -14,8 +14,18 @@ def save_df_to_csv(file_path, df):
 
 
 def save_to_json(file_path, data):
-    # Save the data to a file
-    with open(file_path, 'w') as f:
-        json.dump(data, f, indent=4)  # Write the JSON data to the file with indentation
+    # Load existing data if file exists
+    try:
+        with open(file_path, 'r') as f:
+            existing_data = json.load(f)
+    except FileNotFoundError:
+        existing_data = []
 
-    print(f"File saved to {file_path}")
+    # Append new data to existing data
+    existing_data.append(data)
+
+    # Save the combined data to the file
+    with open(file_path, 'w') as f:
+        json.dump(existing_data, f, indent=4)  # Write the combined JSON data to the file with indentation
+
+    print(f"Data appended and saved to {file_path}")
