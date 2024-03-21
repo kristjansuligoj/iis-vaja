@@ -1,5 +1,5 @@
 import requests
-import json
+from common.common import save_to_json
 
 
 def main():
@@ -12,13 +12,9 @@ def main():
         # Check if the request was successful
         if response.status_code == 200:
             # Parse JSON response
-            data = response.json()
+            mbajk_data = response.json()
 
-            # Save the data to a file
-            with open('../../data/raw/unprocessed_data.json', 'w') as f:
-                json.dump(data, f, indent=4)  # Write the JSON data to the file with indentation
-
-            print("Data fetched and saved to /data/raw/unprocessed_data.json")
+            save_to_json('../../data/raw/mbajk.json', mbajk_data)
         else:
             print(f"Failed to fetch data. Status code: {response.status_code}")
 
