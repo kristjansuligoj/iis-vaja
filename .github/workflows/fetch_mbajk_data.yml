@@ -3,6 +3,7 @@ name: Fetch MBajk data from API hourly
 on:
   schedule:
     - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   test:
