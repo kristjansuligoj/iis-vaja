@@ -1,4 +1,4 @@
-name: Fetch MBajk and weather data every 45 minutes
+name: Fetch MBajk and weather data every 60 minutes
 
 on:
   schedule:
@@ -15,14 +15,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.cache/pypoetry
-        key: ${{ runner.os }}-poetry-${{ hashFiles('**/pyproject.toml') }}
-        restore-keys: |
-          ${{ runner.os }}-poetry-
 
     - name: Set up Python
       uses: actions/setup-python@v2
