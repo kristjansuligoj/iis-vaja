@@ -1,6 +1,9 @@
-import pandas as pd
 from common.common import save_df_to_csv
+from definitions import ROOT_DIR
+
+import pandas as pd
 import json
+import os
 
 
 def main():
@@ -25,8 +28,19 @@ def main():
         ]
         df = df[columns]
 
-        # Fetch weather data
-        weather_df = pd.read_csv('../../data/raw/weather.csv')
+        weather_dir = ROOT_DIR + '/data/raw/weather'
+        weather_dfs = []
+
+        # Loop through each file in the directory
+        for file in os.listdir(weather_dir):
+            if file.endswith('.csv'):
+                # Read the CSV file into a DataFrame
+                temp_df = pd.read_csv(os.path.join(weather_dir, file))
+                # Append the DataFrame to the list
+                weather_dfs.append(temp_df)
+
+        weather_df = pd.concat(weather_dfs, ignore_index=True)
+        weather_df.sort_values(by='date', inplace=True)
 
         # Transform date to same format bike_df date is, so merge can happen
         weather_df['date'] = pd.to_datetime(weather_df['date']).dt.tz_localize(None)
@@ -34,7 +48,17 @@ def main():
         # Sort by last_update column, transform to UNIX datetime, then drop the last_update column
         df.sort_values(by='last_update', inplace=True)
         df['date'] = pd.to_datetime(df['last_update'], unit='ms')
-        df.drop('last_update', axis=1, inplace=True)
+
+        # Group the data into hourly intervals and aggregate as needed
+        df = df.groupby(pd.Grouper(key='date', freq='1h')).agg({
+            'number': 'count',  # Count the number of rows within each hourly interval
+            'name': 'first',  # Take the first value of 'name' within each hourly interval
+            'address': 'first',  # Take the first value of 'address' within each hourly interval
+            'position': 'first',  # Take the first value of 'position' within each hourly interval
+            'bike_stands': 'sum',  # Sum the total bike stands within each hourly interval
+            'available_bike_stands': 'mean',  # Calculate the mean available bike stands within each hourly interval
+            'available_bikes': 'mean'  # Calculate the mean available bikes within each hourly interval
+        }).reset_index()
 
         # Merge weather data with previous response
         merged_df = pd.merge_asof(df, weather_df, left_on='date', right_on='date')

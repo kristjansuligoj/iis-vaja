@@ -1,13 +1,13 @@
-from common.common import save_to_json
+from common.common import save_to_json, save_df_to_csv
+from definitions import ROOT_DIR
+from retry_requests import retry
+from datetime import datetime
 
-import requests
 import openmeteo_requests
 import requests_cache
 import pandas as pd
-from datetime import datetime
-from definitions import ROOT_DIR
-from common.common import save_df_to_csv
-from retry_requests import retry
+import requests
+import os
 
 
 def fetch_weather_data(latitude, longitude):
@@ -22,50 +22,45 @@ def fetch_weather_data(latitude, longitude):
     params = {
         "latitude": latitude,
         "longitude": longitude,
-        "current": [
+        "hourly": [
             "temperature_2m",
             "relative_humidity_2m",
+            "dew_point_2m",
             "apparent_temperature",
-            "is_day",
-            "precipitation",
+            "precipitation_probability",
             "rain",
-            "showers",
-            "snowfall",
-            "cloud_cover",
-            "wind_speed_10m",
+            "surface_pressure",
         ],
         "forecast_days": 1,
     }
     response = openmeteo.weather_api(url, params=params)[0]
 
     # Process hourly data. The order of variables needs to be the same as requested.
-    current = response.Current()
-    current_temperature_2m = current.Variables(0).Value()
-    current_relative_humidity_2m = current.Variables(1).Value()
-    current_apparent_temperature = current.Variables(2).Value()
-    current_is_day = current.Variables(3).Value()
-    current_precipitation = current.Variables(4).Value()
-    current_rain = current.Variables(5).Value()
-    current_showers = current.Variables(6).Value()
-    current_snowfall = current.Variables(7).Value()
-    current_cloud_cover = current.Variables(8).Value()
-    current_wind_speed_10m = current.Variables(9).Value()
+    hourly = response.Hourly()
+    hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
+    hourly_relative_humidity_2m = hourly.Variables(1).ValuesAsNumpy()
+    hourly_dew_point_2m = hourly.Variables(2).ValuesAsNumpy()
+    hourly_apparent_temperature = hourly.Variables(3).ValuesAsNumpy()
+    hourly_precipitation_probability = hourly.Variables(4).ValuesAsNumpy()
+    hourly_rain = hourly.Variables(5).ValuesAsNumpy()
+    hourly_surface_pressure = hourly.Variables(6).ValuesAsNumpy()
 
-    weather_data = {
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "temperature_2m": current_temperature_2m,
-        "relative_humidity_2m": current_relative_humidity_2m,
-        "apparent_temperature": current_apparent_temperature,
-        "is_day": current_is_day,
-        "precipitation": current_precipitation,
-        "rain": current_rain,
-        "showers": current_showers,
-        "snowfall": current_snowfall,
-        "cloud_cover": current_cloud_cover,
-        "wind_speed_10m": current_wind_speed_10m,
+    weather_data = {"date": pd.date_range(
+        start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
+        end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
+        freq=pd.Timedelta(seconds=hourly.Interval()),
+        inclusive="left"
+    ),
+        "temperature": hourly_temperature_2m,
+        "relative_humidity": hourly_relative_humidity_2m,
+        "dew_point": hourly_dew_point_2m,
+        "apparent_temperature": hourly_apparent_temperature,
+        "precipitation_probability": hourly_precipitation_probability,
+        "rain": hourly_rain,
+        "surface_pressure": hourly_surface_pressure
     }
 
-    return pd.DataFrame([weather_data])
+    return pd.DataFrame(weather_data)
 
 
 def main():
@@ -84,10 +79,13 @@ def main():
             save_to_json(file_path, mbajk_data)
 
             try:
-                coordinates = mbajk_data[0]['position']
-                weather_data = fetch_weather_data(coordinates['lat'], coordinates['lng'])
-                file_path = ROOT_DIR + '/data/raw/weather.csv'
-                save_df_to_csv(file_path, weather_data)
+                file_path = ROOT_DIR + '/data/raw/weather/weather-' + str(datetime.now().date()) + '.csv'
+
+                # Checks if weather data for this day does not exist yet
+                if not os.path.isfile(file_path):
+                    coordinates = mbajk_data[0]['position']
+                    weather_data = fetch_weather_data(coordinates['lat'], coordinates['lng'])
+                    save_df_to_csv(file_path, weather_data)
 
             except requests.RequestException as e:
                 print(f"An error occurred: {e}")
