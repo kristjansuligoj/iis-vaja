@@ -50,7 +50,7 @@ def fetch_weather_data(latitude, longitude):
         end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
         freq=pd.Timedelta(seconds=hourly.Interval()),
         inclusive="left"
-    ),
+    ).strftime("%Y-%m-%d %H:%M:%S"),
         "temperature": hourly_temperature_2m,
         "relative_humidity": hourly_relative_humidity_2m,
         "dew_point": hourly_dew_point_2m,

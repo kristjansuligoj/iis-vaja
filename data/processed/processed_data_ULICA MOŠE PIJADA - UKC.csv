@@ -1,2 +1,0 @@
-number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
-14,Ulica Moše Pijada 6,"{'lat': 46.552652, 'lng': 15.646023}",20,16,4,2024-03-21 20:09:24,11.748,69.0,9.846296,44.0,0.0,0.0,0.0,3.0

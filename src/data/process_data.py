@@ -56,7 +56,7 @@ def main():
             'address': 'first',  # Take the first value of 'address' within each hourly interval
             'position': 'first',  # Take the first value of 'position' within each hourly interval
             'bike_stands': 'sum',  # Sum the total bike stands within each hourly interval
-            'available_bike_stands': 'mean',  # Calculate the mean available bike stands within each hourly interval
+            'available_bike_stands': 'first',  # Calculate the mean available bike stands within each hourly interval
             'available_bikes': 'mean'  # Calculate the mean available bikes within each hourly interval
         }).reset_index()
 
@@ -69,7 +69,7 @@ def main():
             station_df = merged_df[merged_df['name'] == station_name].drop('name', axis=1)
 
             # Save the file
-            file_path = f'../../data/processed/processed_data_{station_name}.csv'
+            file_path = f'../../data/processed/processed_data={station_name}.csv'
             save_df_to_csv(file_path, station_df)
 
     except FileNotFoundError:

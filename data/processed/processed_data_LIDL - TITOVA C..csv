@@ -1,2 +1,0 @@
-number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
-19,Titova cesta 15,"{'lat': 46.551963, 'lng': 15.651564}",20,10,10,2024-03-21 19:59:59,12.648,69.0,10.750842,50.0,0.1,0.0,0.0,100.0

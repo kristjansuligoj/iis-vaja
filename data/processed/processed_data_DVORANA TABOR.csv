@@ -1,2 +1,0 @@
-number,address,position,bike_stands,available_bike_stands,available_bikes,date,temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,showers,snowfall,cloud_cover
-22,Gorkega ulica 48,"{'lat': 46.549005, 'lng': 15.635014}",20,2,18,2024-03-21 20:09:33,11.748,69.0,9.846296,44.0,0.0,0.0,0.0,3.0

@@ -1,0 +1,5 @@
+date,number,address,position,bike_stands,available_bike_stands,available_bikes,temperature,relative_humidity,dew_point,apparent_temperature,precipitation_probability,rain,surface_pressure
+2024-03-23 03:00:00,58,Koroška cesta 173,"{'lat': 46.565603, 'lng': 15.623133}",1162,3.0,9.482758620689655,7.5,96.0,6.9,6.0,0.0,0.1,1002.5
+2024-03-29 03:00:00,58,Koroška cesta 173,"{'lat': 46.565603, 'lng': 15.623133}",1162,5.0,9.568965517241379,5.3,88.0,3.4,1.3,0.0,0.0,995.1
+2024-04-01 19:00:00,56,Koroška cesta 173,"{'lat': 46.565603, 'lng': 15.623133}",1121,14.0,9.017857142857142,11.8,79.0,8.3,7.4,0.0,0.0,992.2
+2024-04-04 19:00:00,58,Koroška cesta 173,"{'lat': 46.565603, 'lng': 15.623133}",1162,14.0,9.017241379310345,11.4,84.0,8.8,8.0,0.0,0.0,1003.1
