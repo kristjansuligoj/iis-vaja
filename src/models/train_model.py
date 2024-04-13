@@ -94,7 +94,7 @@ def fill_empty_values(df):
 
 
 def main():
-    station_directory = ROOT_DIR + '/data/processed'
+    station_directory = ROOT_DIR + '/data/processed/'
 
     station_names = []
 
@@ -106,11 +106,11 @@ def main():
             station_names.append(station_name)
 
     for station_name in station_names:
-        window_size = 12
+        window_size = 24
 
         # Read data
-        # df = pd.read_csv(station_directory + 'processed_data=' + station_name + '.csv')
-        df = pd.read_csv(ROOT_DIR + '/data/raw/mbajk_dataset.csv')
+        df = pd.read_csv(station_directory + 'processed_data=' + station_name + '.csv')
+        # df = pd.read_csv(ROOT_DIR + '/data/raw/mbajk_dataset.csv')
 
         # Sort by date
         df['date'] = pd.to_datetime(df['date'])
@@ -133,7 +133,7 @@ def main():
         df_target_columns = df[columns_of_interest].values
         columns = columns_of_interest[1:]
 
-        qt = QuantileTransformer(n_quantiles=500, output_distribution='normal')
+        qt = QuantileTransformer(n_quantiles=32, output_distribution='normal')
 
         for column in columns:
             array = np.array(df[column]).reshape(-1, 1)
@@ -143,7 +143,7 @@ def main():
 
         # Train length is all of available data
         total_length = len(df_target_columns)
-        test_length = 200 + window_size
+        test_length = 100 + window_size
         train_length = total_length - test_length
 
         train_data = df_target_columns[:train_length]
@@ -197,7 +197,7 @@ def main():
         gru_model = create_gru_model(input_shape)
 
         # Fit the model for specific staiton
-        gru_model.fit(X_train, y_train, epochs=5, validation_split=0.2)
+        gru_model.fit(X_train, y_train, epochs=30, validation_split=0.2)
 
         # Save the model for specific station
         gru_model.save(ROOT_DIR + '/models/model=' + station_name + '.h5')
