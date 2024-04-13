@@ -2,7 +2,7 @@ name: Fetch MBajk and weather data every 45 minutes
 
 on:
   schedule:
-    - cron: '*/45 * * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -46,3 +46,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Fetched data with GitHub actions
+        branch: vaja-2
