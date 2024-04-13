@@ -1,0 +1,11 @@
+<app-back-button/>
+
+<div *ngIf="station" class="station-container">
+  <h1>{{station.name}}</h1>
+
+  Predicted available bike stands in the next hours <br/>
+  <hr/>
+  <div *ngFor="let prediction of predictions" class="prediction-item">
+    At {{ prediction.hour }}, the station is expected to have {{ prediction.value }} available bike stands.
+  </div>
+</div>

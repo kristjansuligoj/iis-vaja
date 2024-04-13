@@ -1,0 +1,5 @@
+<h1>Available stations</h1>
+
+<div *ngFor="let station of stations">
+  <a [routerLink]="['/stations', station.id]">{{ station.name }}</a>
+</div>
