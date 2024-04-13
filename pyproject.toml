@@ -19,6 +19,8 @@ tensorflow = "^2.16.1"
 openmeteo-requests = "^1.2.0"
 requests-cache = "^1.2.0"
 retry-requests = "^2.0.0"
+keras = "^3.2.1"
+matplotlib = "^3.8.4"
 
 [tool.poetry.scripts]
 api = "src.serve.api:main"

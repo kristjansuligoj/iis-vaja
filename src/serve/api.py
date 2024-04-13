@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
+from definitions import ROOT_DIR
+from datetime import datetime, timedelta, time
 
 import tensorflow
 import pandas as pd
 import numpy as np
 import joblib
-
-model = tensorflow.keras.models.load_model('src/models/base_data_model.h5')
-scaler = joblib.load('src/models/base_data_scaler.pkl')
+import os
 
 expected_structure = [
     "date",
@@ -31,47 +32,128 @@ def transform_columns(df, columns, scaler):
     return df
 
 
+def get_station_data(station_id):
+    stations = [
+        {'id': 0, 'name': 'EUROPARK - POBREŠKA C',                  'bike_stands': 22},
+        {'id': 1, 'name': 'SPAR - TRŽNICA TABOR',                   'bike_stands': 22},
+        {'id': 2, 'name': 'LJUBLJANSKA UL',                         'bike_stands': 22},
+        {'id': 3, 'name': 'PARTIZANSKA C',                          'bike_stands': 22},
+        {'id': 4, 'name': 'JHMB – DVOETAŽNI MOST',                  'bike_stands': 22},
+        {'id': 5, 'name': 'TELEMACH - GLAVNI TRG - STARI PERON',    'bike_stands': 22},
+        {'id': 6, 'name': 'GOSPOSVETSKA C',                         'bike_stands': 22},
+        {'id': 7, 'name': 'LIDL - KOROŠKA C',                       'bike_stands': 22},
+        {'id': 8, 'name': 'POŠTA - SLOMŠKOV TRG',                   'bike_stands': 22},
+        {'id': 9, 'name': 'PARTIZANSKA C',                          'bike_stands': 22},
+        {'id': 10, 'name': 'PETROL – LENT – VODNI STOLP',           'bike_stands': 22},
+        {'id': 11, 'name': 'None',                                  'bike_stands': 22},
+        {'id': 12, 'name': 'MLINSKA UL',                            'bike_stands': 22},
+        {'id': 13, 'name': 'LJUBLJANSKA UL',                        'bike_stands': 22},
+        {'id': 14, 'name': 'ULICA MOŠE PIJADA - UKC',               'bike_stands': 22},
+        {'id': 15, 'name': 'PARTIZANSKA C',                         'bike_stands': 22},
+        {'id': 16, 'name': 'RAZLAGOVA UL',                          'bike_stands': 22},
+        {'id': 17, 'name': 'KOROŠKA C',                             'bike_stands': 22},
+        {'id': 18, 'name': 'NA POLJANAH - HEROJA ŠERCERJA',         'bike_stands': 22},
+        {'id': 19, 'name': 'GOSPOSVETSKA C',                        'bike_stands': 22},
+        {'id': 20, 'name': 'STROSSMAYERJEVA UL',                    'bike_stands': 22},
+        {'id': 21, 'name': 'LIDL - TITOVA C',                       'bike_stands': 22},
+        {'id': 22, 'name': 'NICEHASH - C',                          'bike_stands': 22},
+        {'id': 23, 'name': 'VZAJEMNA, VARUH ZDRAVJA - BETNAVSKA C', 'bike_stands': 22},
+        {'id': 24, 'name': 'UM FGPA - LENT - SODNI STOLP',          'bike_stands': 22},
+        {'id': 25, 'name': 'GORKEGA UL',                            'bike_stands': 22},
+        {'id': 26, 'name': 'NKBM - TRG LEONA ŠTUKLJA',              'bike_stands': 22},
+        {'id': 27, 'name': 'MLADINSKA UL',                          'bike_stands': 22},
+        {'id': 28, 'name': 'DVORANA TABOR',                         'bike_stands': 22},
+        {'id': 29, 'name': 'GOSPOSVETSKA C',                        'bike_stands': 22}
+    ]
+
+    for station in stations:
+        if station['id'] == station_id:
+            return station
+
+    return None  # Return None if station_id is not found
+
+
 def main():
     app = Flask(__name__)
+    CORS(app)
 
-    # Validate JSON data before request handling
-    @app.before_request
-    def validate_json():
-        if request.endpoint == 'mbajk/predict':
-            # Validate JSON structure and keys for endpoint mbajk/predict
-            if len(request.json) != 186:
-                error_message = "Error! Expected 186 data points with 'date' and 'available_bike_stands' information."
-                return jsonify({"error": error_message}), 400
-            for entry in request.json:
-                keys = list(entry.keys())
-                if keys != expected_structure:
-                    error_message = f"Entry {entry} does not match the expected structure."
-                    return jsonify({"error": error_message}), 400
+    @app.route('/api/predict/<int:station_id>', methods=['GET'])
+    def predict(station_id):
+        station_data = get_station_data(station_id)
 
-    @app.route('/mbajk/predict', methods=['POST'])
-    def predict():
-        # Convert JSON data to a DataFrame
-        df = pd.DataFrame(request.json)
+        model = tensorflow.keras.models.load_model(ROOT_DIR + '/models/model=' + station_data['name'] + '.h5')
+        other_scaler = joblib.load(ROOT_DIR + '/models/scalers/other_scaler=' + station_data['name'] + '.pkl')
+        abs_scaler = joblib.load(ROOT_DIR + '/models/scalers/abs_scaler=' + station_data['name'] + '.pkl')
+        qt = joblib.load(ROOT_DIR + '/models/transformers/transformer=' + station_data['name'] + '.pkl')
 
-        # Convert 'date' column to datetime format and sort
-        df['date'] = pd.to_datetime(df['date'])
-        df = df.sort_values('date')
+        # Get current time rounded to hour
+        current_datetime = datetime.now().replace(minute=0, second=0, microsecond=0)
+        yesterday_datetime = current_datetime - timedelta(days=1)
 
-        # Transform data and make prediction
-        available_bike_stands = df['available_bike_stands'].values.reshape(-1, 1)
-        n_available_bike_stands = scaler.transform(available_bike_stands)
-        n_available_bike_stands = np.reshape(
-            n_available_bike_stands,
-            (n_available_bike_stands.shape[1], 1, n_available_bike_stands.shape[0])
-        )
+        today_file_path = ROOT_DIR + '/data/raw/weather/weather-' + str(current_datetime.date()) + '.csv'
+        yesterday_file_path = ROOT_DIR + '/data/raw/weather/weather-' + str(yesterday_datetime.date()) + '.csv'
 
-        # Make predictions using model
-        prediction = model.predict(n_available_bike_stands)
+        # Checks if weather data for this day does not exist yet
+        if os.path.isfile(today_file_path):
+            df = pd.read_csv(today_file_path)
+            df['date'] = pd.to_datetime(df['date'])
 
-        # Inverse the transformation
-        inversed_n_bike_stands = scaler.inverse_transform(np.array(prediction).reshape(-1, 1))
+            # Check if we need to get data from yesterday's forecast
+            if current_datetime.time() < time(12, 0, 0):
+                print("get also yesterday")
+                if os.path.isfile(yesterday_file_path):
+                    df_yesterday = pd.read_csv(yesterday_file_path)
+                    df_yesterday['date'] = pd.to_datetime(df_yesterday['date'])
+                    df = pd.concat([df, df_yesterday], ignore_index=True)
 
-        return jsonify({'prediction': inversed_n_bike_stands.tolist()})
+            df['bike_stands'] = 22  # I NEED A DICTIONARY OF ALL STATIONS, SO THIS DATA IS AVAILABLE
+
+            # Only save 19 latest data points, so we can get predictions for the next 7 hours (12 is window size)
+            df = df.sort_values('date').head(20)
+
+            columns_of_interest = [
+                'temperature',
+                'relative_humidity',
+                'dew_point',
+                'apparent_temperature',
+                'precipitation_probability',
+                'rain',
+                'surface_pressure',
+                'bike_stands'
+            ]
+
+            columns = columns_of_interest[1:]
+
+            # Fix skewness
+            for column in columns:
+                array = np.array(df[column]).reshape(-1, 1)
+                df[column] = qt.fit_transform(array)
+
+            # Normalize
+            df[columns] = other_scaler.fit_transform(df[columns])
+
+            predictions = []
+            window_size = 12
+
+            for i in range(7):
+                start_index = i
+                end_index = i + window_size
+                df_window = df.iloc[start_index:end_index]
+
+                weather_data = df_window[columns_of_interest].values
+                weather_data_reshaped = np.reshape(weather_data, (1, weather_data.shape[1], weather_data.shape[0]))
+                prediction = model.predict(weather_data_reshaped)
+                inverse_prediction = abs_scaler.inverse_transform(np.array(prediction).reshape(-1, 1))
+
+                predictions.append(float(inverse_prediction[0][0]))
+
+            return jsonify({
+                "station_name": station_data['name'],
+                "station_bike_stands": station_data['bike_stands'],
+                "predictions": predictions
+            })
+
+        return jsonify({"Message": "Data not available."})
 
     app.run(host='0.0.0.0', port=5000)
 
