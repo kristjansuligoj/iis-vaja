@@ -22,7 +22,7 @@ def save_to_json(file_path, data):
         existing_data = []
 
     # Append new data to existing data
-    existing_data.append(data)
+    existing_data.extend(data)
 
     # Save the combined data to the file
     with open(file_path, 'w') as f:
