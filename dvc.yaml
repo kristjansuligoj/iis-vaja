@@ -12,9 +12,9 @@ stages:
     deps:
       - src/data/preprocess_mbajk_data.py
       - data/raw/mbajk/mbajk.json
+      - data/raw/mbajk/all-mbajk.json
     outs:
       - data/raw/mbajk/preprocessed_mbajk.csv
-      - data/raw/mbajk/all-mbajk.json
 
   fetch_weather_data:
     cmd: python src/data/fetch_weather_data.py

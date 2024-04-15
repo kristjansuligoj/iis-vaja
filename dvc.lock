@@ -15,19 +15,19 @@ stages:
   preprocess_mbajk_data:
     cmd: python src/data/preprocess_mbajk_data.py
     deps:
-    - path: data/raw/mbajk/mbajk.json
-      hash: md5
-      md5: a28bc992d13174fddaede8924055ec0c
-      size: 13381
-    - path: src/data/preprocess_mbajk_data.py
-      hash: md5
-      md5: a553a8527899d3835e203080da5304ee
-      size: 1252
-    outs:
     - path: data/raw/mbajk/all-mbajk.json
       hash: md5
-      md5: 837efc5025d511523d59c73db02f4358
-      size: 9083761
+      md5: 858d8728189d6859d673e4dbbf01e332
+      size: 9097140
+    - path: data/raw/mbajk/mbajk.json
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: src/data/preprocess_mbajk_data.py
+      hash: md5
+      md5: 72783008231c438cebd3587302b5bbc5
+      size: 1246
+    outs:
     - path: data/raw/mbajk/preprocessed_mbajk.csv
       hash: md5
       md5: 2f2985fe1dc0696e511a80eb204b714c
@@ -57,8 +57,8 @@ stages:
       size: 1779
     - path: src/data/preprocess_weather_data.py
       hash: md5
-      md5: 6d9a8b970d1801a20ff004828b0b6c0b
-      size: 1396
+      md5: daaaba99d135d75d7d4283610d721493
+      size: 1395
     outs:
     - path: data/raw/weather/preprocessed_weather.csv
       hash: md5
