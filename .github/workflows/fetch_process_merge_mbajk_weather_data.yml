@@ -62,10 +62,6 @@ jobs:
       run: |
         poetry run dvc pull -r origin --force
 
-    - name: Unprotect
-      run: |
-        poetry run dvc unprotect data
-
     - name: Fetch bike data
       run: poetry run python src/data/fetch_mbajk_data.py
 
@@ -138,10 +134,6 @@ jobs:
     - name: Pull data
       run: |
         poetry run dvc pull -r origin
-
-    - name: Unprotect
-      run: |
-        poetry run dvc unprotect data
 
     - name: Preprocess bike data
       run: poetry run python src/data/preprocess_mbajk_data.py
@@ -216,10 +208,6 @@ jobs:
         run: |
           poetry run dvc pull -r origin
 
-      - name: Unprotect
-        run: |
-          poetry run dvc unprotect data
-
       - name: Fetch weather data
         run: poetry run python src/data/fetch_weather_data.py
 
@@ -293,10 +281,6 @@ jobs:
       run: |
         poetry run dvc pull -r origin
 
-    - name: Unprotect
-      run: |
-        poetry run dvc unprotect data
-
     - name: Preprocess weather data
       run: poetry run python src/data/preprocess_weather_data.py
 
@@ -369,10 +353,6 @@ jobs:
     - name: Pull data
       run: |
         poetry run dvc pull -r origin
-
-    - name: Unprotect
-      run: |
-        poetry run dvc unprotect data
 
     - name: Merge processed data
       run: poetry run python src/data/merge_processed_data.py
