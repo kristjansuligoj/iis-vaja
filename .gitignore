@@ -1,4 +1,4 @@
 .pytest_cache/
 .idea/
 /data
-.dvc.yaml
+dvc.yaml
