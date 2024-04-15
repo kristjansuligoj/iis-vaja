@@ -83,6 +83,7 @@ jobs:
 
 
   preprocess_mbajk_data:
+    needs: fetch_mbajk_data
     runs-on: ubuntu-latest
 
     permissions:
@@ -159,6 +160,7 @@ jobs:
 
 
   fetch_weather_data:
+    needs: preprocess_mbajk_data
     runs-on: ubuntu-latest
 
     permissions:
@@ -235,6 +237,7 @@ jobs:
 
 
   preprocess_weather_data:
+    needs: fetch_weather_data
     runs-on: ubuntu-latest
 
     permissions:
@@ -311,6 +314,7 @@ jobs:
 
 
   merge_processed_data:
+    needs: preprocess_weather_data
     runs-on: ubuntu-latest
 
     permissions:
