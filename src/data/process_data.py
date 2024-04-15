@@ -12,6 +12,10 @@ def main():
         with open('../../data/raw/mbajk.json', 'r') as f:
             data = json.load(f)
 
+        # Empty the file
+        with open('../../data/raw/mbajk.json', 'w') as f:
+            f.write('')
+
         # Transform json to csv
         df = pd.DataFrame(data)
 

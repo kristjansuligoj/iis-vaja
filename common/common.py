@@ -16,8 +16,11 @@ def save_df_to_csv(file_path, df):
 def save_to_json(file_path, data):
     # Load existing data if file exists
     try:
-        with open(file_path, 'r') as f:
-            existing_data = json.load(f)
+        if os.path.getsize(file_path) > 0:
+            with open(file_path, 'r') as f:
+                existing_data = json.load(f)
+        else:
+            existing_data = []
     except FileNotFoundError:
         existing_data = []
 
