@@ -60,7 +60,7 @@ jobs:
 
     - name: Pull data
       run: |
-        poetry run dvc pull -r origin
+        poetry run dvc pull -r origin --force
 
     - name: Unprotect
       run: |
