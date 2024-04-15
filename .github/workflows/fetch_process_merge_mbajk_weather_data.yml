@@ -21,37 +21,366 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Install Poetry
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        poetry --version
+    - name: Install Poetry Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.local
+        key: poetry-1.8.2
+
+    - uses: snok/install-poetry@v1
+      with:
+        version: 1.8.2
+        virtualenvs-create: true
+        virtualenvs-in-project: true
 
     - name: Install dependencies
       run: |
         poetry install
 
-    - name: Fetch mbajk data
-      run: |
-        poetry run python src/data/fetch_mbajk_data.py
+    - name: Cache dependencies
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: .venv
+        key: pydeps-${{ hashFiles('**/poetry.lock') }}
 
-    - name: Preprocess mbajk data
-      run: |
-        poetry run python src/data/preprocess_mbajk_data.py
+    - run: poetry install --no-interaction --no-root
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
 
-    - name: Fetch weather data
+    - name: Setup DVC
+      uses: iterative/setup-dvc@v1
+      with:
+        version: '3.48.4'
+
+    - name: Setup Dagshub
       run: |
-        poetry run python src/data/fetch_weather_data.py
+        poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+        poetry run dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
+        poetry run dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
+
+    - name: Pull data
+      run: |
+        poetry run dvc pull -r origin
+
+    - name: Unprotect
+      run: |
+        poetry run dvc unprotect data
+
+    - name: Fetch bike data
+      run: poetry run python src/data/fetch_mbajk_data.py
+
+    - name: Add data to DVC
+      run: |
+        poetry run dvc add data
+
+    - name: DVC push
+      run: |
+        poetry run dvc push -r origin
+
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Update data dvc
+
+
+  preprocess_mbajk_data:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install Poetry Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.local
+        key: poetry-1.8.2
+
+    - uses: snok/install-poetry@v1
+      with:
+        version: 1.8.2
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: |
+        poetry install
+
+    - name: Cache dependencies
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: .venv
+        key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+    - run: poetry install --no-interaction --no-root
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+    - name: Setup DVC
+      uses: iterative/setup-dvc@v1
+      with:
+        version: '3.48.4'
+
+    - name: Setup Dagshub
+      run: |
+        poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+        poetry run dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
+        poetry run dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
+
+    - name: Pull data
+      run: |
+        poetry run dvc pull -r origin
+
+    - name: Unprotect
+      run: |
+        poetry run dvc unprotect data
+
+    - name: Preprocess bike data
+      run: poetry run python src/data/preprocess_mbajk_data.py
+
+    - name: Add data to DVC
+      run: |
+        poetry run dvc add data
+
+    - name: DVC push
+      run: |
+        poetry run dvc push -r origin
+
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Update data dvc
+
+
+  fetch_weather_data:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Poetry Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.local
+          key: poetry-1.8.2
+
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.8.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+      - run: poetry install --no-interaction --no-root
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+      - name: Setup DVC
+        uses: iterative/setup-dvc@v1
+        with:
+          version: '3.48.4'
+
+      - name: Setup Dagshub
+        run: |
+          poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+          poetry run dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
+          poetry run dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
+
+      - name: Pull data
+        run: |
+          poetry run dvc pull -r origin
+
+      - name: Unprotect
+        run: |
+          poetry run dvc unprotect data
+
+      - name: Fetch weather data
+        run: poetry run python src/data/fetch_weather_data.py
+
+      - name: Add data to DVC
+        run: |
+          poetry run dvc add data
+
+      - name: DVC push
+        run: |
+          poetry run dvc push -r origin
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update data dvc
+
+
+  preprocess_weather_data:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install Poetry Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.local
+        key: poetry-1.8.2
+
+    - uses: snok/install-poetry@v1
+      with:
+        version: 1.8.2
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: |
+        poetry install
+
+    - name: Cache dependencies
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: .venv
+        key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+    - run: poetry install --no-interaction --no-root
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+    - name: Setup DVC
+      uses: iterative/setup-dvc@v1
+      with:
+        version: '3.48.4'
+
+    - name: Setup Dagshub
+      run: |
+        poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+        poetry run dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
+        poetry run dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
+
+    - name: Pull data
+      run: |
+        poetry run dvc pull -r origin
+
+    - name: Unprotect
+      run: |
+        poetry run dvc unprotect data
 
     - name: Preprocess weather data
+      run: poetry run python src/data/preprocess_weather_data.py
+
+    - name: Add data to DVC
       run: |
-        poetry run python src/data/preprocess_weather_data.py
+        poetry run dvc add data
+
+    - name: DVC push
+      run: |
+        poetry run dvc push -r origin
+
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Update data dvc
+
+
+  merge_processed_data:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install Poetry Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.local
+        key: poetry-1.8.2
+
+    - uses: snok/install-poetry@v1
+      with:
+        version: 1.8.2
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: |
+        poetry install
+
+    - name: Cache dependencies
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: .venv
+        key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+    - run: poetry install --no-interaction --no-root
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+    - name: Setup DVC
+      uses: iterative/setup-dvc@v1
+      with:
+        version: '3.48.4'
+
+    - name: Setup Dagshub
+      run: |
+        poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+        poetry run dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
+        poetry run dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
+
+    - name: Pull data
+      run: |
+        poetry run dvc pull -r origin
+
+    - name: Unprotect
+      run: |
+        poetry run dvc unprotect data
 
     - name: Merge processed data
-      run: |
-        poetry run python src/data/merge_processed_data.py
+      run: poetry run python src/data/merge_processed_data.py
 
-    - name: Fetch, process and merge Mbajk&weather data
-      uses: stefanzweifel/git-auto-commit-action@v5
+    - name: Add data to DVC
+      run: |
+        poetry run dvc add data
+
+    - name: DVC push
+      run: |
+        poetry run dvc push -r origin
+
+    - uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: Fetch, process and merge Mbajk&weather data with GitHub actions
-        branch: vaja-3
+        commit_message: Update data dvc
