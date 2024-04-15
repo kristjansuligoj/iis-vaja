@@ -1,0 +1,57 @@
+name: Fetch, process and merge Mbajk&weather data
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch_mbajk_data:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry --version
+
+    - name: Install dependencies
+      run: |
+        poetry install
+
+    - name: Fetch mbajk data
+      run: |
+        poetry run python src/data/fetch_mbajk_data.py
+
+    - name: Preprocess mbajk data
+      run: |
+        poetry run python src/data/preprocess_mbajk_data.py
+
+    - name: Fetch weather data
+      run: |
+        poetry run python src/data/fetch_weather_data.py
+
+    - name: Preprocess weather data
+      run: |
+        poetry run python src/data/preprocess_weather_data.py
+
+    - name: Merge processed data
+      run: |
+        poetry run python src/data/merge_processed_data.py
+
+    - name: Fetch, process and merge Mbajk&weather data
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Fetch, process and merge Mbajk&weather data with GitHub actions
+        branch: vaja-3
