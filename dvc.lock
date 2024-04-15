@@ -1,0 +1,78 @@
+schema: '2.0'
+stages:
+  fetch_mbajk_data:
+    cmd: python src/data/fetch_mbajk_data.py
+    deps:
+    - path: src/data/fetch_mbajk_data.py
+      hash: md5
+      md5: 0333b5ad47f1c6175c55a640cfd1df65
+      size: 861
+    outs:
+    - path: data/raw/mbajk/mbajk.json
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+  preprocess_mbajk_data:
+    cmd: python src/data/preprocess_mbajk_data.py
+    deps:
+    - path: data/raw/mbajk/mbajk.json
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: src/data/preprocess_mbajk_data.py
+      hash: md5
+      md5: 72783008231c438cebd3587302b5bbc5
+      size: 1246
+    outs:
+    - path: data/raw/mbajk/preprocessed_mbajk.csv
+      hash: md5
+      md5: a8e6855210e4aafeaf82bfd73769372e
+      size: 2181
+  fetch_weather_data:
+    cmd: python src/data/fetch_weather_data.py
+    deps:
+    - path: src/data/fetch_weather_data.py
+      hash: md5
+      md5: eb54fcd7afa058a208dcc81d57460ec5
+      size: 2927
+    outs:
+    - path: data/raw/weather/weather.csv
+      hash: md5
+      md5: 35f69803638f6b58a543553ddfab66e0
+      size: 1779
+  preprocess_weather_data:
+    cmd: python src/data/preprocess_weather_data.py
+    deps:
+    - path: data/raw/weather/weather.csv
+      hash: md5
+      md5: 35f69803638f6b58a543553ddfab66e0
+      size: 1779
+    - path: src/data/preprocess_weather_data.py
+      hash: md5
+      md5: 6dcef899ec628aa4497fc587c440adb7
+      size: 1332
+    outs:
+    - path: data/raw/weather/preprocessed_weather.csv
+      hash: md5
+      md5: 5f18781bf5fa989dd8674852a558f607
+      size: 3469
+  merge_processed_data:
+    cmd: python src/data/merge_processed_data.py
+    deps:
+    - path: data/raw/mbajk/preprocessed_mbajk.csv
+      hash: md5
+      md5: a8e6855210e4aafeaf82bfd73769372e
+      size: 2181
+    - path: data/raw/weather/preprocessed_weather.csv
+      hash: md5
+      md5: 5f18781bf5fa989dd8674852a558f607
+      size: 3469
+    - path: src/data/merge_processed_data.py
+      hash: md5
+      md5: d7578277d82f072efe710ff388c71c92
+      size: 1258
+    outs:
+    - path: data/processed/processed_data=DVORANA_TABOR.csv
+      hash: md5
+      md5: 3bb7d0bec49fb3049b79318ac04ef3b5
+      size: 248

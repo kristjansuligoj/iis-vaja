@@ -28,3 +28,12 @@ stages:
       - data/raw/weather/weather.csv
     outs:
       - data/raw/weather/preprocessed_weather.csv
+
+  merge_processed_data:
+    cmd: python src/data/merge_processed_data.py
+    deps:
+      - src/data/merge_processed_data.py
+      - data/raw/mbajk/preprocessed_mbajk.csv
+      - data/raw/weather/preprocessed_weather.csv
+    outs:
+      - data/processed/processed_data=DVORANA_TABOR.csv
