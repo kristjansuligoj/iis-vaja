@@ -4,36 +4,27 @@ stages:
     deps:
       - src/data/fetch_mbajk_data.py
     outs:
-      - data/mbajk_data.csv
+      - data/raw/mbajk/mbajk.json
 
   preprocess_mbajk_data:
-    cmd: python src/data/preprocess_mbajk_data.py data/mbajk_data.csv
+    cmd: python src/data/preprocess_mbajk_data.py
     deps:
       - src/data/preprocess_mbajk_data.py
-      - data/mbajk_data.csv
+      - data/raw/mbajk/mbajk.json
     outs:
-      - data/processed_mbajk_data.csv
+      - data/raw/mbajk/preprocessed_mbajk.csv
 
   fetch_weather_data:
     cmd: python src/data/fetch_weather_data.py
     deps:
       - src/data/fetch_weather_data.py
     outs:
-      - data/weather_data.csv
+      - data/raw/weather/weather.csv
 
   preprocess_weather_data:
-    cmd: python src/data/preprocess_weather_data.py data/weather_data.csv
+    cmd: python src/data/preprocess_weather_data.py
     deps:
       - src/data/preprocess_weather_data.py
-      - data/weather_data.csv
+      - data/raw/weather/weather.csv
     outs:
-      - data/processed_weather_data.csv
-
-  merge_processed_data:
-    cmd: python src/data/merge_processed_data.py data/processed_mbajk_data.csv data/processed_weather_data.csv
-    deps:
-      - src/data/merge_processed_data.py
-      - data/processed_mbajk_data.csv
-      - data/processed_weather_data.csv
-    outs:
-      - data/merged_data.csv
+      - data/raw/weather/preprocessed_weather.csv

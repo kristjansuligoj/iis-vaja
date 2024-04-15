@@ -8,11 +8,11 @@ import json
 def main():
     try:
         # Open the file in read mode
-        with open('../../data/raw/mbajk/mbajk.json', 'r') as f:
+        with open(ROOT_DIR + '/data/raw/mbajk/mbajk.json', 'r') as f:
             data = json.load(f)
 
         # Clear the file
-        with open('../../data/raw/mbajk/mbajk.json', 'w') as f:
+        with open(ROOT_DIR + '/data/raw/mbajk/mbajk.json', 'w') as f:
             f.write('')
 
         save_to_json(ROOT_DIR + '/data/raw/mbajk/all-mbajk.json', data)
@@ -31,7 +31,7 @@ def main():
             'available_bike_stands',
         ]]
 
-        file_path = '../../data/raw/mbajk/preprocessed_mbajk.csv'
+        file_path = ROOT_DIR + '/data/raw/mbajk/preprocessed_mbajk.csv'
         df.to_csv(file_path, index=False)
     except FileNotFoundError:
         print("File not found. Please make sure the file exists.")

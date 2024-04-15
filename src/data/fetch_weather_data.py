@@ -65,7 +65,7 @@ def fetch_weather_data(latitude, longitude):
 
 def main():
     try:
-        file_path = ROOT_DIR + '/data/raw/weather/by-date/weather=' + str(datetime.now().date()) + '.csv'
+        file_path = ROOT_DIR + '/data/raw/weather/weather.csv'
 
         # Checks if weather data for this day does not exist yet
         if not os.path.isfile(file_path):
