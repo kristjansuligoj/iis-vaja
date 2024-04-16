@@ -52,6 +52,7 @@ jobs:
           poetry run python tests/test_open_meteo_api_endpoint.py
 
   fetch_mbajk_data:
+    needs: test_api_endpoints
     runs-on: ubuntu-latest
 
     permissions:
