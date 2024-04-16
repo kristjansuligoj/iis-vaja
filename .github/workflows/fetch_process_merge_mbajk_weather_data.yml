@@ -6,6 +6,51 @@ on:
   workflow_dispatch:
 
 jobs:
+  test_api_endpoints:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: 'vaja-3'
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Poetry Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.local
+          key: poetry-1.8.2
+
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.8.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+      - run: poetry install --no-interaction --no-root
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Test API endpoints
+        run: |
+          poetry run python tests/test_mbajk_api_endpoint.py
+          poetry run python tests/test_open_meteo_api_endpoint.py
+
   fetch_mbajk_data:
     runs-on: ubuntu-latest
 
