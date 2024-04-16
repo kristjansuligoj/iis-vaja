@@ -24,7 +24,7 @@ def main():
 
             # Save the file
             file_path = ROOT_DIR + f'/data/processed/processed_data={station_name}.csv'
-            save_df_to_csv(file_path, station_df)
+            save_df_to_csv(file_path, station_df, False)
 
     except FileNotFoundError:
         print("File not found. Please make sure the file exists.")

@@ -2,8 +2,8 @@ import os
 import json
 
 
-def save_df_to_csv(file_path, df):
-    df.to_csv(file_path, mode='a', index=False)
+def save_df_to_csv(file_path, df, header=True):
+    df.to_csv(file_path, mode='a', index=False, header=header)
     print(f"File saved to {file_path}")
 
 
