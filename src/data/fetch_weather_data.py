@@ -66,15 +66,11 @@ def fetch_weather_data(latitude, longitude):
 def main():
     try:
         file_path = ROOT_DIR + '/data/raw/weather/weather.csv'
-
-        # Checks if weather data for this day does not exist yet
-        if not os.path.isfile(file_path):
-            weather_data = fetch_weather_data(46.5547, 15.6459)  # Maribor coordinates
-            save_df_to_csv(file_path, weather_data)
+        weather_data = fetch_weather_data(46.5547, 15.6459)  # Maribor coordinates
+        save_df_to_csv(file_path, weather_data)
 
     except requests.RequestException as e:
         print(f"An error occurred: {e}")
-
 
 
 if __name__ == "__main__":

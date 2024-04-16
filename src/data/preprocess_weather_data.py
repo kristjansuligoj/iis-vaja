@@ -1,8 +1,8 @@
-import os
 from datetime import datetime, timedelta
-import pandas as pd
+from definitions import ROOT_DIR
 
-from definitions import ROOT_DIR  # Assuming ROOT_DIR is defined in definitions.py
+import pandas as pd
+import os
 
 
 def main():
@@ -12,23 +12,30 @@ def main():
         all_df = pd.read_csv(all_file_path)
         all_df['date'] = pd.to_datetime(all_df['date'])
 
-        # Read today's data
+        # Read today's weather
         today_file_path = os.path.join(ROOT_DIR, 'data', 'raw', 'weather', 'weather.csv')
         today_df = pd.read_csv(today_file_path)
 
+        # Clears the file for further use
+        with open(today_file_path, 'w'):
+            pass
+
         # Filter yesterday's data
-        yesterday_date = datetime.now().date() - timedelta(days=1)
+        today_date = datetime.now().date()
+        yesterday_date = today_date - timedelta(days=1)
         yesterday_df = all_df.loc[all_df['date'].dt.date == yesterday_date]
 
         # Concatenate today and yesterday's data
-        df = pd.concat([yesterday_df, today_df], ignore_index=True)
+        processed_df = pd.concat([yesterday_df, today_df], ignore_index=True)
 
-        # Save concatenated data to all-weather.csv
-        df.to_csv(all_file_path, index=False)
+        # If today weather data does not yet exist, save it
+        if not (today_date in all_df['date'].dt.date.unique()):
+            all_df = pd.concat([all_df, today_df], ignore_index=True)
+            all_df.to_csv(all_file_path, index=False)
 
         # Save to preprocessed file
         preprocessed_file_path = os.path.join(ROOT_DIR, 'data', 'raw', 'weather', 'preprocessed_weather.csv')
-        df.to_csv(preprocessed_file_path, index=False)
+        processed_df.to_csv(preprocessed_file_path, index=False)
     except FileNotFoundError:
         print("File not found. Please make sure the file exists.")
     except IOError as e:
