@@ -73,6 +73,9 @@ jobs:
       run: |
         poetry run dvc push -r origin
 
+    - name: Pull changes from remote repository
+      run: git pull origin vaja-3
+
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Update data dvc
@@ -145,6 +148,9 @@ jobs:
     - name: DVC push
       run: |
         poetry run dvc push -r origin
+
+    - name: Pull changes from remote repository
+      run: git pull origin vaja-3
 
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
@@ -219,6 +225,9 @@ jobs:
         run: |
           poetry run dvc push -r origin
 
+      - name: Pull changes from remote repository
+        run: git pull origin vaja-3
+
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update data dvc
@@ -292,6 +301,9 @@ jobs:
       run: |
         poetry run dvc push -r origin
 
+    - name: Pull changes from remote repository
+      run: git pull origin vaja-3
+
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Update data dvc
@@ -364,6 +376,9 @@ jobs:
     - name: DVC push
       run: |
         poetry run dvc push -r origin
+
+    - name: Pull changes from remote repository
+      run: git pull origin vaja-3
 
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
