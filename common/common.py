@@ -2,7 +2,12 @@ import os
 import json
 
 
-def save_df_to_csv(file_path, df, header=True):
+def save_df_to_csv(file_path, df, force_header=False):
+    header = False
+
+    if not os.path.exists(file_path) or force_header:
+        header = True
+
     df.to_csv(file_path, mode='a', index=False, header=header)
     print(f"File saved to {file_path}")
 
