@@ -95,6 +95,12 @@ jobs:
       run: |
         poetry install
 
+    - name: Temporary workaround for GitVersion
+      shell: bash
+      run: |
+        git config --unset-all extensions.worktreeconfig
+        # See https://github.com/GitTools/actions/issues/1115
+
     - name: Setup DVC
       uses: iterative/setup-dvc@v1
       with:
@@ -173,6 +179,12 @@ jobs:
 
     - run: poetry install --no-interaction --no-root
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+    - name: Temporary workaround for GitVersion
+      shell: bash
+      run: |
+        git config --unset-all extensions.worktreeconfig
+        # See https://github.com/GitTools/actions/issues/1115
 
     - name: Setup DVC
       uses: iterative/setup-dvc@v1
@@ -253,6 +265,12 @@ jobs:
       - run: poetry install --no-interaction --no-root
         if: steps.cache-dependencies.outputs.cache-hit != 'true'
 
+      - name: Temporary workaround for GitVersion
+        shell: bash
+        run: |
+          git config --unset-all extensions.worktreeconfig
+          # See https://github.com/GitTools/actions/issues/1115
+
       - name: Setup DVC
         uses: iterative/setup-dvc@v1
         with:
@@ -332,6 +350,12 @@ jobs:
     - run: poetry install --no-interaction --no-root
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
 
+    - name: Temporary workaround for GitVersion
+      shell: bash
+      run: |
+        git config --unset-all extensions.worktreeconfig
+        # See https://github.com/GitTools/actions/issues/1115
+
     - name: Setup DVC
       uses: iterative/setup-dvc@v1
       with:
@@ -410,6 +434,12 @@ jobs:
 
     - run: poetry install --no-interaction --no-root
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+    - name: Temporary workaround for GitVersion
+      shell: bash
+      run: |
+        git config --unset-all extensions.worktreeconfig
+        # See https://github.com/GitTools/actions/issues/1115
 
     - name: Setup DVC
       uses: iterative/setup-dvc@v1
