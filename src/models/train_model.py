@@ -110,7 +110,7 @@ def main():
 
         # Read data
         df = pd.read_csv(station_directory + 'processed_data=' + station_name + '.csv')
-        # df = pd.read_csv(ROOT_DIR + '/data/raw/mbajk_dataset.csv')
+        # df = pd.read_csv(ROOT_DIR + '/data/raw/mbajk/mbajk_dataset.csv')
 
         # Sort by date
         df['date'] = pd.to_datetime(df['date'])

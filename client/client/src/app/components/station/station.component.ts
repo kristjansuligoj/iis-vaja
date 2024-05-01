@@ -39,6 +39,8 @@ export class StationComponent {
           next: (response: any) => {
             this.predictions = response.predictions;
 
+            console.log(this.predictions);
+
             const labels: string[] = [];
             for (let i = 1; i <= 7; i++) {
               const hour = new Date(new Date().getTime() + i * 60 * 60 * 1000).getHours(); // Get the hour for each prediction
