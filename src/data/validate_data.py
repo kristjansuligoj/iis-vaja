@@ -4,13 +4,17 @@ import sys
 
 
 def main():
-    data_context = great_expectations.DataContext(context_root_dir=(ROOT_DIR + "/gx"))
+    try:
+        data_context = great_expectations.DataContext(context_root_dir=(ROOT_DIR + "/gx"))
+    except great_expectations.exceptions.DataContextError as e:
+        print(f"Error loading data context: {e}")
+        sys.exit(1)
 
-    print("This is okay 1")
-
-    validation = data_context.run_checkpoint(checkpoint_name="merged_data_checkpoint")
-
-    print("This is okay 2")
+    validation = data_context.run_checkpoint(
+        checkpoint_name="merged_data_checkpoint",
+        batch_request=None,
+        run_name=None,
+    )
 
     if not validation["success"]:
         print("Validation failed!")
