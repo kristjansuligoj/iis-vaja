@@ -21,6 +21,8 @@ requests-cache = "^1.2.0"
 retry-requests = "^2.0.0"
 keras = "^3.2.1"
 matplotlib = "^3.8.4"
+great_expectations="^0.18.13"
+evidently = "^0.4.19"
 
 [tool.poetry.scripts]
 api = "src.serve.api:main"
