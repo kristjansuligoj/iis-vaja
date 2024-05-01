@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: 'vaja-3'
+          ref: 'main'
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -62,7 +62,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ref: 'vaja-3'
+        ref: 'main'
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -141,7 +141,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ref: 'vaja-3'
+        ref: 'main'
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -220,7 +220,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: 'vaja-3'
+          ref: 'main'
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -299,7 +299,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ref: 'vaja-3'
+        ref: 'main'
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -378,7 +378,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ref: 'vaja-3'
+        ref: 'main'
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -457,7 +457,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: 'vaja-3'
+          ref: 'main'
 
       - name: Set up Python
         uses: actions/setup-python@v2
