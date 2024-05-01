@@ -68,7 +68,7 @@ jobs:
 
       - name: Validate data
         run: |
-          poetry run python gx/validate_data.py
+          poetry run python src/data/validate_data.py
           
 
   test_data:
