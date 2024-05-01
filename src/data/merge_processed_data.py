@@ -8,6 +8,11 @@ def main():
     try:
         mbajk_df = pd.read_csv(ROOT_DIR + '/data/raw/mbajk/preprocessed_mbajk.csv')
         weather_df = pd.read_csv(ROOT_DIR + '/data/raw/weather/preprocessed_weather.csv')
+        empty_df = pd.DataFrame()
+
+        # Clear the preprocessed files
+        empty_df.to_csv(ROOT_DIR + '/data/raw/mbajk/preprocessed_mbajk.csv', index=False)
+        empty_df.to_csv(ROOT_DIR + '/data/raw/weather/preprocessed_weather.csv', index=False)
 
         mbajk_df['date'] = pd.to_datetime(mbajk_df['date'])
         weather_df['date'] = pd.to_datetime(weather_df['date'])
