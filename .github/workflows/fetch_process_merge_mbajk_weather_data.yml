@@ -447,6 +447,7 @@ jobs:
 
 
   validate_data:
+    needs: merge_processed_data
     runs-on: ubuntu-latest
 
     permissions:
