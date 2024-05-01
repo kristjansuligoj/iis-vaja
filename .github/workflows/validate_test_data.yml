@@ -69,7 +69,16 @@ jobs:
       - name: Validate data
         run: |
           poetry run python src/data/validate_data.py
-          
+
+      - name: Deploy validation output to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: "gx/uncommitted/data_docs/local_site"
+          production-deploy: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
 
   test_data:
     needs: validate_data
