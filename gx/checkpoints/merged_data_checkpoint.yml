@@ -1,4 +1,4 @@
-name: new_data_checkpoint
+name: merged_data_checkpoint
 config_version: 1.0
 template_name:
 module_name: great_expectations.checkpoint
@@ -20,12 +20,12 @@ evaluation_parameters: {}
 runtime_configuration: {}
 validations:
   - batch_request:
-      datasource_name: reference_data
+      datasource_name: merged_datasource
       data_connector_name: default_inferred_data_connector_name
-      data_asset_name: processed_data=STROSSMAYERJEVA_UL_-_TRŽNICA.csv
+      data_asset_name: reference_data.csv
       data_connector_query:
         index: -1
-    expectation_suite_name: my_suite
+    expectation_suite_name: merged_data_suite
 profilers: []
 ge_cloud_id:
 expectation_suite_ge_cloud_id:
