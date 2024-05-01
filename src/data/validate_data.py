@@ -4,7 +4,7 @@ import sys
 
 
 def main():
-    data_context = great_expectations.DataContext(context_root_dir=ROOT_DIR + "/gx")
+    data_context = great_expectations.DataContext(context_root_dir=(ROOT_DIR + "/gx"))
 
     validation = data_context.run_checkpoint(
         checkpoint_name="merged_data_checkpoint",
