@@ -2,6 +2,11 @@ import os
 import json
 
 
+def make_directory_if_missing(directory_path):
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+
+
 def save_df_to_csv(file_path, df, force_header=False):
     header = False
 
