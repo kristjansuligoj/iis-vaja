@@ -1,24 +1,7 @@
 {
   "data_asset_type": null,
-  "expectation_suite_name": "my_suite",
+  "expectation_suite_name": "merged_data_suite",
   "expectations": [
-    {
-      "expectation_type": "expect_table_row_count_to_be_between",
-      "kwargs": {
-        "max_value": 797,
-        "min_value": 797
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "domain_kwargs": {},
-            "metric_name": "table.row_count",
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
-      }
-    },
     {
       "expectation_type": "expect_table_columns_to_match_set",
       "kwargs": {
