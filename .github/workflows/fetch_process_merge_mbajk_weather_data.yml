@@ -507,7 +507,7 @@ jobs:
 
       - name: Reference data and Current data
         run: |
-          cp data/processed data
+          cp data/processed/processed_data=DVORANA_TABOR.csv data/current_data.csv
 
       - name: Validate data
         run: |
