@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.9,<4.0"
 requests = "^2.31.0"
 pytest = "^8.1.1"
 flask = "^3.0.2"
@@ -21,8 +21,9 @@ requests-cache = "^1.2.0"
 retry-requests = "^2.0.0"
 keras = "^3.2.1"
 matplotlib = "^3.8.4"
-great_expectations="^0.18.13"
-evidently = "^0.4.19"
+great-expectations="^0.18.13"
+evidently = "0.4.19"
+litestar="2.8.2"
 
 [tool.poetry.scripts]
 api = "src.serve.api:main"
