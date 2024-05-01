@@ -447,7 +447,6 @@ jobs:
 
 
   validate_data:
-    needs: merge_processed_data
     runs-on: ubuntu-latest
 
     permissions:
@@ -512,7 +511,7 @@ jobs:
       - name: Validate data
         run: |
           poetry run python src/data/validate_data.py
-          
+
 
   test_data:
     needs: validate_data
@@ -584,7 +583,7 @@ jobs:
       - name: Test data
         run: |
           poetry run python src/data/evidently_test_data.py
-          
+
       - name: Update reference data
         run: |
           cp data/current_data.csv data/reference_data.csv
