@@ -4,12 +4,13 @@ from evidently.report import Report
 from evidently.tests import *
 
 import pandas as pd
+from definitions import ROOT_DIR
 import sys
 
 
 def main():
-    reference_data = pd.read_csv("../../data/reference_data.csv")
-    current_data = pd.read_csv("../../data/current_data.csv")
+    reference_data = pd.read_csv(ROOT_DIR + "/data/reference_data.csv")
+    current_data = pd.read_csv(ROOT_DIR + "/data/current_data.csv")
 
     report = Report(metrics=[
         DataDriftPreset()
@@ -20,7 +21,7 @@ def main():
         current_data=current_data
     )
 
-    report.save('../../reports/data_tests/data_drift.json')
+    report.save(ROOT_DIR + "/reports/data_tests/data_drift.json")
 
     tests = TestSuite(tests=[
         TestNumberOfColumnsWithMissingValues(),
@@ -44,7 +45,7 @@ def main():
     else:
         print("All tests passed!")
 
-    tests.save_html("reports/sites/stability_tests.html")
+    tests.save_html(ROOT_DIR + "/reports/sites/stability_tests.html")
 
 
 if __name__ == "__main__":
