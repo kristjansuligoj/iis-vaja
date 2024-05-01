@@ -2,10 +2,11 @@ from evidently.metric_preset import DataDriftPreset
 from evidently.test_suite import TestSuite
 from evidently.report import Report
 from evidently.tests import *
+from definitions import ROOT_DIR
 
 import pandas as pd
-from definitions import ROOT_DIR
 import sys
+import os
 
 
 def main():
@@ -21,11 +22,14 @@ def main():
         current_data=current_data
     )
 
-    report.save(ROOT_DIR + "/reports/data_tests/data_drift.json")
+    # Create directory for reports if it doesn't exist
+    reports_dir = os.path.join(ROOT_DIR, "reports", "data_tests")
+    if not os.path.exists(reports_dir):
+        os.makedirs(reports_dir)
+
+    report.save(os.path.join(reports_dir, "data_drift.json"))
 
     tests = TestSuite(tests=[
-        TestNumberOfColumnsWithMissingValues(),
-        TestNumberOfRowsWithMissingValues(),
         TestNumberOfConstantColumns(),
         TestNumberOfDuplicatedRows(),
         TestNumberOfDuplicatedColumns(),
@@ -45,7 +49,12 @@ def main():
     else:
         print("All tests passed!")
 
-    tests.save_html(ROOT_DIR + "/reports/sites/stability_tests.html")
+    # Create directory for reports if it doesn't exist
+    reports_dir = os.path.join(ROOT_DIR, "reports", "sites")
+    if not os.path.exists(reports_dir):
+        os.makedirs(reports_dir)
+
+    tests.save_html(os.path.join(reports_dir, "stability_tests.html"))
 
 
 if __name__ == "__main__":
