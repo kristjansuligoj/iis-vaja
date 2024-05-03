@@ -100,7 +100,7 @@ def main():
 
         station_model = mlflow.sklearn.log_model(
             sk_model=station_model,
-            artifact_path=f"models/{station_name}",
+            artifact_path=f"models/model/{station_name}",
             registered_model_name=f"model={station_name}",
         )
 
