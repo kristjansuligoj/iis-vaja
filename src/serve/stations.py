@@ -27,7 +27,6 @@ stations = [
         {'id': 25, 'name': 'TELEMACH - GLAVNI TRG - STARI PERON', 'bike_stands': 22},
         {'id': 26, 'name': 'ULICA MOŠE PIJADA - UKC', 'bike_stands': 22},
         {'id': 27, 'name': 'UM FGPA - LENT - SODNI STOLP', 'bike_stands': 22},
-        {'id': 28, 'name': 'VZAJEMNA, VARUH ZDRAVJA - BETNAVSKA C.', 'bike_stands': 22}
 ]
 
 
