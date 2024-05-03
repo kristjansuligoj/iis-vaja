@@ -2,9 +2,10 @@ name: Train and evalute models
 
 on:
   workflow_run:
-    workflows: [Fetch, process and merge Mbajk&weather data]
+    workflows: ["Fetch, process and merge Mbajk&weather data"]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   train_models:
