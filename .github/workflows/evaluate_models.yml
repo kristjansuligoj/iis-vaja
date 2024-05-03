@@ -1,4 +1,4 @@
-name: Train models
+name: Evaluate models
 
 on:
   workflow_dispatch:
@@ -72,9 +72,9 @@ jobs:
         run: |
           poetry run dvc unprotect data
 
-      - name: Train models
+      - name: Evaluate models
         run: |
-          poetry run python src/models/train_models.py
+          poetry run python src/models/evaluate_models.py
 
       - name: Add data to DVC
         run: |
