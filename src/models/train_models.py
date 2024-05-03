@@ -123,7 +123,6 @@ def main():
         save_scaler(ml_flow_client, "other_scaler", other_scaler, station_name)
 
         mlflow.end_run()
-        break
 
 
 if __name__ == "__main__":

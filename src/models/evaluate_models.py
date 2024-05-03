@@ -147,7 +147,6 @@ def main():
                 f'Mean average error: {mae}\nMean square error: {mse}\nExplained variance score: {evs}\n')
 
         mlflow.end_run()
-        break
 
 
 if __name__ == "__main__":
