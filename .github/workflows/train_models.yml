@@ -72,11 +72,11 @@ jobs:
 
       - name: Train models
         run: |
-          poetry run src/models/train_models.py
+          poetry run python src/models/train_models.py
 
       - name: Evaluate models
         run: |
-          poetry run src/models/evaluate_models.py
+          poetry run python src/models/evaluate_models.py
 
       - name: Add data to DVC
         run: |
