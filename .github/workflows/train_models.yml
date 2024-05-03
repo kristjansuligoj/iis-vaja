@@ -7,6 +7,12 @@ on:
       - completed
   workflow_dispatch:
 
+env:
+  DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+  DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+  DAGSHUB_URI: ${{ secrets.DAGSHUB_URI }}
+  DAGSHUB_REPO_NAME: ${{ secrets.DAGSHUB_REPO_NAME }}
+
 jobs:
   train_models:
     runs-on: ubuntu-latest
