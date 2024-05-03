@@ -10,8 +10,6 @@ def download_model(station_name, stage):
         # Get model latest staging source
         latest_model_version_source = client.get_latest_versions(name=model_name, stages=[stage])[0].source
 
-        print(latest_model_version_source)
-
         # Load the model by its source
         return mlflow.sklearn.load_model(latest_model_version_source)
     except IndexError:
