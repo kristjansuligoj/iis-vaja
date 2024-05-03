@@ -1,13 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_cors import CORS
 from definitions import ROOT_DIR
-from datetime import datetime, timedelta, time
+from src.models.mlflow_client import download_model, download_scaler
+from stations import get_station_data
+from download_models import download_models
 
-import tensorflow
 import pandas as pd
 import numpy as np
 import joblib
 import os
+
 
 expected_structure = [
     "date",
@@ -32,65 +34,23 @@ def transform_columns(df, columns, scaler):
     return df
 
 
-def get_station_data(station_id):
-    stations = [
-        {'id': 0, 'name': 'DVORANA TABOR', 'bike_stands': 22},
-        {'id': 1, 'name': 'EUROPARK - POBREŠKA C.', 'bike_stands': 22},
-        {'id': 2, 'name': 'GORKEGA UL. - OŠ FRANCETA PREŠERNA', 'bike_stands': 22},
-        {'id': 3, 'name': 'GOSPOSVETSKA C. - III. GIMNAZIJA', 'bike_stands': 22},
-        {'id': 4, 'name': 'GOSPOSVETSKA C. - TURNERJEVA UL.', 'bike_stands': 22},
-        {'id': 5, 'name': 'GOSPOSVETSKA C. - VRBANSKA C.', 'bike_stands': 22},
-        {'id': 6, 'name': 'JHMB – DVOETAŽNI MOST', 'bike_stands': 22},
-        {'id': 7, 'name': 'KOROŠKA C. - KOROŠKI VETER', 'bike_stands': 22},
-        {'id': 8, 'name': 'LIDL - KOROŠKA C.', 'bike_stands': 22},
-        {'id': 9, 'name': 'LIDL - TITOVA C.', 'bike_stands': 22},
-        {'id': 10, 'name': 'LJUBLJANSKA UL. - FOCHEVA', 'bike_stands': 22},
-        {'id': 11, 'name': 'LJUBLJANSKA UL. - II. GIMNAZIJA', 'bike_stands': 22},
-        {'id': 12, 'name': 'MLADINSKA UL. - TRUBARJEVA UL.', 'bike_stands': 22},
-        {'id': 13, 'name': 'MLINSKA UL . - AVTOBUSNA POSTAJA', 'bike_stands': 22},
-        {'id': 14, 'name': 'NA POLJANAH - HEROJA ŠERCERJA', 'bike_stands': 22},
-        {'id': 15, 'name': 'NICEHASH - C PROLETARSKIH BRIGAD', 'bike_stands': 22},
-        {'id': 16, 'name': 'NKBM - TRG LEONA ŠTUKLJA', 'bike_stands': 22},
-        {'id': 17, 'name': 'PARTIZANSKA C. - CANKARJEVA UL.', 'bike_stands': 22},
-        {'id': 18, 'name': 'PARTIZANSKA C. - TIC', 'bike_stands': 22},
-        {'id': 19, 'name': 'PARTIZANSKA C. - ŽELEZNIŠKA POSTAJA', 'bike_stands': 22},
-        {'id': 20, 'name': 'PETROL – LENT – VODNI STOLP', 'bike_stands': 22},
-        {'id': 21, 'name': 'POŠTA - SLOMŠKOV TRG', 'bike_stands': 22},
-        {'id': 22, 'name': 'RAZLAGOVA UL. - OBČINA', 'bike_stands': 22},
-        {'id': 23, 'name': 'SPAR - TRŽNICA TABOR', 'bike_stands': 22},
-        {'id': 24, 'name': 'STROSSMAYERJEVA UL. - TRŽNICA', 'bike_stands': 22},
-        {'id': 25, 'name': 'TELEMACH - GLAVNI TRG - STARI PERON', 'bike_stands': 22},
-        {'id': 26, 'name': 'ULICA MOŠE PIJADA - UKC', 'bike_stands': 22},
-        {'id': 27, 'name': 'UM FGPA - LENT - SODNI STOLP', 'bike_stands': 22},
-        {'id': 28, 'name': 'VZAJEMNA, VARUH ZDRAVJA - BETNAVSKA C.', 'bike_stands': 22}
-    ]
-
-    for station in stations:
-        station['name'] = station['name'].replace('.', '').replace(' ', '_')
-        if station['id'] == station_id:
-            return station
-
-    return None  # Return None if station_id is not found
-
-
 def main():
     app = Flask(__name__)
     CORS(app)
 
+    download_models()
+
     @app.route('/api/predict/<int:station_id>', methods=['GET'])
     def predict(station_id):
-        station_data = get_station_data(station_id)
+        station = get_station_data(station_id)
 
-        model = tensorflow.keras.models.load_model(ROOT_DIR + '/models/model=' + station_data['name'] + '.h5')
-        other_scaler = joblib.load(ROOT_DIR + '/models/scalers/other_scaler=' + station_data['name'] + '.pkl')
-        abs_scaler = joblib.load(ROOT_DIR + '/models/scalers/abs_scaler=' + station_data['name'] + '.pkl')
-        qt = joblib.load(ROOT_DIR + '/models/transformers/transformer=' + station_data['name'] + '.pkl')
+        model_path = os.path.join(ROOT_DIR, "models", station['name'], "production_model.h5")
+        abs_scaler_path = os.path.join(ROOT_DIR, "models", station['name'], "production_abs_scaler.gz")
 
-        # Get current time rounded to hour
-        current_datetime = datetime.now().replace(minute=0, second=0, microsecond=0)
-        yesterday_datetime = current_datetime - timedelta(days=1)
+        model = joblib.load(model_path)
+        abs_scaler = joblib.load(abs_scaler_path)
 
-        weather_file_path = ROOT_DIR + '/data/raw/weather/preprocessed_weather.csv'
+        weather_file_path = os.path.join(ROOT_DIR, "data", "processed", f"processed_data={station['name']}.csv")
 
         # Checks if weather data for this day does not exist yet
         if os.path.isfile(weather_file_path):
@@ -113,15 +73,7 @@ def main():
                 'bike_stands'
             ]
 
-            columns = columns_of_interest[1:]
-
-            # Fix skewness
-            for column in columns:
-                array = np.array(df[column]).reshape(-1, 1)
-                df[column] = qt.fit_transform(array)
-
-            # Normalize
-            df[columns] = other_scaler.fit_transform(df[columns])
+            df = df[columns_of_interest]
 
             predictions = []
             window_size = 24
@@ -139,8 +91,8 @@ def main():
                 predictions.append(float(inverse_prediction[0][0]))
 
             return jsonify({
-                "station_name": station_data['name'],
-                "station_bike_stands": station_data['bike_stands'],
+                "station_name": station['name'],
+                "station_bike_stands": station['bike_stands'],
                 "predictions": predictions
             })
 
