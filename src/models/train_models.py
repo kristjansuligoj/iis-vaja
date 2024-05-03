@@ -9,6 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 from model_data import prepare_train_test_data
 from definitions import ROOT_DIR
 from dotenv import load_dotenv
+from src.serve.stations import get_stations
 
 load_dotenv()
 
@@ -60,21 +61,14 @@ def save_scaler(client, scaler_type, scaler, station_name):
 def main():
     station_directory = ROOT_DIR + '/data/processed/'
 
-    station_names = []
-
-    for filename in os.listdir(station_directory):
-        if filename.startswith('processed_data='):
-            # Parse station name from the file name
-            station_name = filename.split('=')[1].split('.')[0]
-            # Append station name to the list
-            station_names.append(station_name)
-
     dagshub.auth.add_app_token(token=os.getenv("DAGSHUB_TOKEN"))
     dagshub.init(os.getenv("DAGSHUB_REPO_NAME"), os.getenv("DAGSHUB_USERNAME"), mlflow=True)
     mlflow.set_tracking_uri(os.getenv("DAGSHUB_URI"))
     ml_flow_client = MlflowClient()
 
+    station_names = get_stations()
     for station_name in station_names:
+        station_name = station_name['name']
         mlflow.start_run(run_name=f"run={station_name}")
         mlflow.tensorflow.autolog()
 
@@ -129,6 +123,7 @@ def main():
         save_scaler(ml_flow_client, "other_scaler", other_scaler, station_name)
 
         mlflow.end_run()
+        break
 
 
 if __name__ == "__main__":

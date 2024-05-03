@@ -9,6 +9,7 @@ from common.common import make_directory_if_missing
 from src.models.mlflow_client import download_model, download_scaler
 from definitions import ROOT_DIR
 from dotenv import load_dotenv
+from src.serve.stations import get_stations
 
 load_dotenv()
 
@@ -58,20 +59,13 @@ def replace_production_model(station_name):
 def main():
     station_directory = ROOT_DIR + '/data/processed/'
 
-    station_names = []
-
-    for filename in os.listdir(station_directory):
-        if filename.startswith('processed_data='):
-            # Parse station name from the file name
-            station_name = filename.split('=')[1].split('.')[0]
-            # Append station name to the list
-            station_names.append(station_name)
-
     dagshub.auth.add_app_token(token=os.getenv("DAGSHUB_TOKEN"))
     dagshub.init(os.getenv("DAGSHUB_REPO_NAME"), os.getenv("DAGSHUB_USERNAME"), mlflow=True)
     mlflow.set_tracking_uri(os.getenv("DAGSHUB_URI"))
 
+    station_names = get_stations()
     for station_name in station_names:
+        station_name = station_name['name']
         print(f"\nEvaluating model {station_name}\n")
         mlflow.start_run(run_name=f"run={station_name}")
         mlflow.tensorflow.autolog()
