@@ -66,6 +66,11 @@ def main():
     mlflow.set_tracking_uri(os.getenv("DAGSHUB_URI"))
     ml_flow_client = MlflowClient()
 
+    print(os.getenv("DAGSHUB_TOKEN"))
+    print(os.getenv("DAGSHUB_REPO_NAME"))
+    print(os.getenv("DAGSHUB_USERNAME"))
+    print(os.getenv("DAGSHUB_URI"))
+
     station_names = get_stations()
     for station_name in station_names:
         station_name = station_name['name']
