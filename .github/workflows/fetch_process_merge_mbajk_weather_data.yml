@@ -52,7 +52,7 @@ jobs:
           poetry run python tests/test_open_meteo_api_endpoint.py
 
   process_data:
-    needs: fetch_mbajk_data
+    needs: test_api_endpoints
     runs-on: ubuntu-latest
 
     permissions:
@@ -142,7 +142,7 @@ jobs:
         commit_message: Update data dvc
 
   validate_data:
-    needs: merge_processed_data
+    needs: process_data
     runs-on: ubuntu-latest
 
     permissions:
