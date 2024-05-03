@@ -10,7 +10,7 @@ env:
   DAGSHUB_REPO_NAME: ${{ secrets.DAGSHUB_REPO_NAME }}
 
 jobs:
-  train_models:
+  evaluate_models:
     runs-on: ubuntu-latest
 
     permissions:
