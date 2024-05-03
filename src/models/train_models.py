@@ -40,7 +40,7 @@ def save_scaler(client, scaler_type, scaler, station_name):
 
     scaler = mlflow.sklearn.log_model(
         sk_model=scaler,
-        artifact_path=f"models/scalers/{scaler_type}",
+        artifact_path=f"models/{station_name}/{scaler_type}",
         registered_model_name=f"{scaler_type}={station_name}",
         metadata=metadata,
     )
@@ -65,11 +65,6 @@ def main():
     dagshub.init(os.getenv("DAGSHUB_REPO_NAME"), os.getenv("DAGSHUB_USERNAME"), mlflow=True)
     mlflow.set_tracking_uri(os.getenv("DAGSHUB_URI"))
     ml_flow_client = MlflowClient()
-
-    print(os.getenv("DAGSHUB_TOKEN"))
-    print(os.getenv("DAGSHUB_REPO_NAME"))
-    print(os.getenv("DAGSHUB_USERNAME"))
-    print(os.getenv("DAGSHUB_URI"))
 
     station_names = get_stations()
     for station_name in station_names:
@@ -105,7 +100,7 @@ def main():
 
         station_model = mlflow.sklearn.log_model(
             sk_model=station_model,
-            artifact_path="models",
+            artifact_path=f"models/{station_name}",
             registered_model_name=f"model={station_name}",
         )
 
