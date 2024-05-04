@@ -1,14 +1,15 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from definitions import ROOT_DIR
-from src.models.mlflow_client import download_model, download_scaler
 from stations import get_station_data
 from download_models import download_models
 
+from datetime import datetime
 import pandas as pd
 import numpy as np
 import joblib
 import os
+from src.database.connector import insert_data
 
 
 expected_structure = [
@@ -43,6 +44,8 @@ def main():
     @app.route('/api/predict/<int:station_id>', methods=['GET'])
     def predict(station_id):
         station = get_station_data(station_id)
+
+        print(f"Predicting for station {station['name']}. . .")
 
         model_path = os.path.join(ROOT_DIR, "models", station['name'], "production_model.h5")
         abs_scaler_path = os.path.join(ROOT_DIR, "models", station['name'], "production_abs_scaler.gz")
@@ -89,6 +92,16 @@ def main():
                 inverse_prediction = abs_scaler.inverse_transform(np.array(prediction).reshape(-1, 1))
 
                 predictions.append(float(inverse_prediction[0][0]))
+
+            print("Predictions created. Sending data to database.")
+
+            prediction = {
+                'station': station['name'],
+                'predictions': predictions,
+                'date': datetime.now(),
+            }
+
+            insert_data('predictions', prediction)
 
             return jsonify({
                 "station_name": station['name'],

@@ -20,12 +20,15 @@ def download_models():
     dagshub.init(os.getenv("DAGSHUB_REPO_NAME"), os.getenv("DAGSHUB_USERNAME"), mlflow=True)
     mlflow.set_tracking_uri(os.getenv("DAGSHUB_URI"))
 
+    print("Checking if models exist locally, and download them otherwise.")
+
     for station in get_stations():
         model_path = os.path.join(ROOT_DIR, "models", station['name'], "production_model.h5")
         abs_scaler_path = os.path.join(ROOT_DIR, "models", station['name'], "production_abs_scaler.gz")
 
         # Check if model is already downloaded, and skip this station if it is
         if is_model_already_downloaded(model_path, abs_scaler_path):
+            print(f"Model for {station['name']} already loaded. Skipping. . .")
             continue
 
         try:

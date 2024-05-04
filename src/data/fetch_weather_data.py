@@ -1,13 +1,11 @@
 from common.common import save_df_to_csv
 from definitions import ROOT_DIR
 from retry_requests import retry
-from datetime import datetime
 
 import openmeteo_requests
 import requests_cache
 import pandas as pd
 import requests
-import os
 
 
 def fetch_weather_data(latitude, longitude):
