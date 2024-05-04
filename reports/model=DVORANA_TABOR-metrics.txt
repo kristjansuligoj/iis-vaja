@@ -1,3 +1,3 @@
-Mean average error: 4.973907373476363
-Mean square error: 31.47354526644363
-Explained variance score: 0.055055950664412934
+Mean average error: 4.702476105129402
+Mean square error: 28.67309171717207
+Explained variance score: 0.08415570966756969
