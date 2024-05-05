@@ -1,4 +1,4 @@
-name: Deploy client to Northflank
+name: Deploy API to Northflank
 
 on:
   push:
