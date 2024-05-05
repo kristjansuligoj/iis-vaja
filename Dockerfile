@@ -22,8 +22,8 @@ RUN poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjan
 RUN poetry run dvc remote modify origin --local access_key_id 443b7bfc6bc29f1467cbcf004a21d6b596c4e3f5
 RUN poetry run dvc remote modify origin --local secret_access_key 443b7bfc6bc29f1467cbcf004a21d6b596c4e3f5
 
-# Expose port 5000
-EXPOSE 5000
+# Expose port 8080
+EXPOSE 8080
 
 # Set PYTHONPATH to include /app directory
 ENV PYTHONPATH "${PYTHONPATH}:/app"
