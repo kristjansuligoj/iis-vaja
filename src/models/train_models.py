@@ -2,6 +2,7 @@ import tensorflow
 import dagshub
 import mlflow
 import os
+import tf2onnx
 
 import mlflow.sklearn
 from mlflow import MlflowClient
@@ -98,24 +99,37 @@ def main():
         mlflow.log_param("epochs", epochs)
         mlflow.log_param("train_dataset_size", len(X_train) + len(y_train))
 
-        station_model = mlflow.sklearn.log_model(
-            sk_model=station_model,
+        # Otherwise conversion fails
+        station_model.output_names = ["output"]
+
+        input_signature = [
+            tensorflow.TensorSpec(shape=(None, 9, 24), dtype=tensorflow.double, name="input")
+        ]
+
+        # Transform from keras to ONNX
+        onnx_model, _ = tf2onnx.convert.from_keras(
+            model=station_model,
+            input_signature=input_signature,
+            opset=13
+        )
+
+        onnx_model = mlflow.onnx.log_model(
+            onnx_model=onnx_model,
             artifact_path=f"models/{station_name}/model",
             registered_model_name=f"model={station_name}",
         )
 
         # Create model version
-        model_version = ml_flow_client.create_model_version(
+        onnx_model_version = ml_flow_client.create_model_version(
             name=f"model={station_name}",
-            source=station_model.model_uri,
-            run_id=station_model.run_id
+            source=onnx_model.model_uri,
+            run_id=onnx_model.run_id
         )
 
-        # Create model version stage
         ml_flow_client.transition_model_version_stage(
             name=f"model={station_name}",
-            version=model_version.version,
-            stage="staging",
+            version=onnx_model_version.version,
+            stage="production",
         )
 
         # Save scalers
