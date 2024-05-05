@@ -129,7 +129,7 @@ def main():
         ml_flow_client.transition_model_version_stage(
             name=f"model={station_name}",
             version=onnx_model_version.version,
-            stage="production",
+            stage="staging",
         )
 
         # Save scalers
