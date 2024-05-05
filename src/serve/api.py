@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+import onnxruntime
 from src.database.connector import insert_data
 
 
@@ -35,6 +36,40 @@ def transform_columns(df, columns, scaler):
     return df
 
 
+def prepare_data(df, other_scaler, abs_scaler):
+    columns_of_interest = [
+        'available_bike_stands',
+        'temperature',
+        'relative_humidity',
+        'dew_point',
+        'apparent_temperature',
+        'precipitation_probability',
+        'rain',
+        'surface_pressure',
+        'bike_stands'
+    ]
+
+    df = df[columns_of_interest].values
+
+    test_data = df
+
+    abs_test_data = test_data[:, 0]
+
+    other_test_data = test_data[:, 1:]
+
+    # Normalization
+    normalized_other_test_data = other_scaler.transform(other_test_data)
+
+    normalized_abs_test_data = abs_scaler.transform(abs_test_data.reshape(-1, 1))
+
+    X_predict = np.column_stack([
+        normalized_other_test_data,
+        normalized_abs_test_data
+    ])
+
+    return X_predict.reshape(1, X_predict.shape[1], X_predict.shape[0])
+
+
 def main():
     app = Flask(__name__)
     CORS(app)
@@ -47,36 +82,23 @@ def main():
 
         print(f"Predicting for station {station['name']}. . .")
 
-        model_path = os.path.join(ROOT_DIR, "models", station['name'], "production_model.h5")
-        abs_scaler_path = os.path.join(ROOT_DIR, "models", station['name'], "production_abs_scaler.gz")
+        model_path = os.path.join(ROOT_DIR, "models", station['name'], f"model={station['name']}.onnx")
+        other_scaler_path = os.path.join(ROOT_DIR, "models", station['name'], f"other_scaler={station['name']}.gz")
+        abs_scaler_path = os.path.join(ROOT_DIR, "models", station['name'], f"abs_scaler={station['name']}.gz")
+        df_path = os.path.join(ROOT_DIR, "data", "processed", f"processed_data={station['name']}.csv")
 
-        model = joblib.load(model_path)
+        other_scaler = joblib.load(other_scaler_path)
         abs_scaler = joblib.load(abs_scaler_path)
 
-        weather_file_path = os.path.join(ROOT_DIR, "data", "processed", f"processed_data={station['name']}.csv")
-
         # Checks if weather data for this day does not exist yet
-        if os.path.isfile(weather_file_path):
-            df = pd.read_csv(weather_file_path)
+        if os.path.isfile(df_path):
+            df = pd.read_csv(df_path)
             df['date'] = pd.to_datetime(df['date'])
 
             df['bike_stands'] = 22  # I NEED A DICTIONARY OF ALL STATIONS, SO THIS DATA IS AVAILABLE
 
             # Only save 19 latest data points, so we can get predictions for the next 7 hours (12 is window size)
             df = df.sort_values('date').head(32)
-
-            columns_of_interest = [
-                'temperature',
-                'relative_humidity',
-                'dew_point',
-                'apparent_temperature',
-                'precipitation_probability',
-                'rain',
-                'surface_pressure',
-                'bike_stands'
-            ]
-
-            df = df[columns_of_interest]
 
             predictions = []
             window_size = 24
@@ -86,12 +108,18 @@ def main():
                 end_index = i + window_size
                 df_window = df.iloc[start_index:end_index]
 
-                weather_data = df_window[columns_of_interest].values
-                weather_data_reshaped = np.reshape(weather_data, (1, weather_data.shape[1], weather_data.shape[0]))
-                prediction = model.predict(weather_data_reshaped)
-                inverse_prediction = abs_scaler.inverse_transform(np.array(prediction).reshape(-1, 1))
+                X_predict = prepare_data(df_window, other_scaler, abs_scaler)
 
-                predictions.append(float(inverse_prediction[0][0]))
+                model = onnxruntime.InferenceSession(model_path)
+
+                model_predictions = model.run(
+                    ["output"],
+                    {"input": X_predict}
+                )[0]
+
+                inverse_model_predictions = abs_scaler.inverse_transform(model_predictions)
+
+                predictions.append(float(inverse_model_predictions[0][0]))
 
             print("Predictions created. Sending data to database.")
 
