@@ -1,0 +1,69 @@
+name: Evaluate predictions from today
+
+on:
+  schedule:
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+jobs:
+  split_data:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Poetry Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.local
+          key: poetry-1.8.2
+
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.8.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+
+      - run: poetry install --no-interaction --no-root
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+
+      - name: Setup DVC
+        uses: iterative/setup-dvc@v1
+        with:
+          version: '3.48.4'
+
+      - name: Setup Dagshub
+        run: |
+          poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+          poetry run dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
+          poetry run dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
+
+      - name: Pull data
+        run: |
+          poetry run dvc pull -r origin
+
+      - name: Evaluate past predictions
+        run: |
+          poetry run python src/serve/evaluate_past_predictions.py
