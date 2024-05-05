@@ -72,10 +72,6 @@ jobs:
         run: |
           poetry run dvc pull -r origin
 
-      - name: Unprotect
-        run: |
-          poetry run dvc unprotect data
-
       - name: Train models
         run: |
           poetry run python src/models/train_models.py
