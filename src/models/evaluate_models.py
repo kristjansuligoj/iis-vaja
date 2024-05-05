@@ -167,7 +167,6 @@ def main():
             )
 
         mlflow.end_run()
-        break
 
 
 if __name__ == "__main__":
