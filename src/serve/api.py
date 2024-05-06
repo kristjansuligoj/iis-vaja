@@ -72,11 +72,11 @@ def prepare_data(df, other_scaler, abs_scaler):
 
 def main():
     app = Flask(__name__)
+    CORS(app)
 
     # download_models()
 
     @app.route('/api/predict/<int:station_id>', methods=['GET'])
-    @cross_origin()
     def predict(station_id):
         station = get_station_data(station_id)
 
