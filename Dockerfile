@@ -23,7 +23,7 @@ RUN poetry run dvc remote modify origin --local access_key_id 443b7bfc6bc29f1467
 RUN poetry run dvc remote modify origin --local secret_access_key 443b7bfc6bc29f1467cbcf004a21d6b596c4e3f5
 
 # Pull data from Dagshub
-dvc pull -r origin
+RUN dvc pull -r origin
 
 # Expose port 8080
 EXPOSE 8080
@@ -32,5 +32,4 @@ EXPOSE 8080
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 # Command to run the application
-CMD ["dvc", "pull", "-r", "origin"]
 CMD ["poetry", "run", "python", "src/serve/api.py"]
