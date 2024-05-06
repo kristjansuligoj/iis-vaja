@@ -72,11 +72,12 @@ def prepare_data(df, other_scaler, abs_scaler):
 
 def main():
     app = Flask(__name__)
+    app.config['CORS_HEADERS'] = 'Content-Type'
     CORS(
         app,
         resources={
             r"/*": {
-                "origins": "https://p01--iis-client--462724rjs8tc.code.run",
+                "origins": "*",
                 "supports_credentials": True,
                 "Access-Control-Allow-Credentials": True,
             }
