@@ -72,17 +72,6 @@ def prepare_data(df, other_scaler, abs_scaler):
 
 def main():
     app = Flask(__name__)
-    app.config['CORS_HEADERS'] = 'Content-Type'
-    CORS(
-        app,
-        resources={
-            r"/*": {
-                "origins": ["*"],
-                "supports_credentials": True,
-                "Access-Control-Allow-Credentials": True,
-            }
-        }
-    )
 
     # download_models()
 
