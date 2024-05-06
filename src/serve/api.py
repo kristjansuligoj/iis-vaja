@@ -83,7 +83,7 @@ def main():
         }
     )
 
-    download_models()
+    # download_models()
 
     @app.route('/api/predict/<int:station_id>', methods=['GET'])
     def predict(station_id):
