@@ -77,7 +77,7 @@ def main():
         app,
         resources={
             r"/*": {
-                "origins": "*",
+                "origins": ["*"],
                 "supports_credentials": True,
                 "Access-Control-Allow-Credentials": True,
             }
