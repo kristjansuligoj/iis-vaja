@@ -87,6 +87,7 @@ def main():
     # download_models()
 
     @app.route('/api/predict/<int:station_id>', methods=['GET'])
+    @cross_origin()
     def predict(station_id):
         station = get_station_data(station_id)
 
