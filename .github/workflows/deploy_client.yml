@@ -13,7 +13,7 @@ env:
    IMAGE_NAME: ${{ github.repository }}
 
    PROJECT_ID: iis-vaja
-   SERVICE_ID: iis-api
+   SERVICE_ID: iis-client
    CREDENTIALS_ID: iis-vaja-registry
 
 jobs:
