@@ -5,8 +5,14 @@ on:
     - cron: '0 22 * * *'
   workflow_dispatch:
 
+env:
+  DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+  DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+  DAGSHUB_URI: ${{ secrets.DAGSHUB_URI }}
+  DAGSHUB_REPO_NAME: ${{ secrets.DAGSHUB_REPO_NAME }}
+
 jobs:
-  split_data:
+  evaluate_predictions_from_today:
     runs-on: ubuntu-latest
 
     permissions:
