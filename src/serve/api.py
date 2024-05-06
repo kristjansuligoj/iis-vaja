@@ -72,7 +72,7 @@ def prepare_data(df, other_scaler, abs_scaler):
 
 def main():
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, origins="*")
 
     download_models()
 
