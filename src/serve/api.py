@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from definitions import ROOT_DIR
 from stations import get_station_data
 from download_models import download_models
@@ -72,7 +72,16 @@ def prepare_data(df, other_scaler, abs_scaler):
 
 def main():
     app = Flask(__name__)
-    CORS(app, origins="*")
+    CORS(
+        app,
+        resources={
+            r"/*": {
+                "origins": "https://p01--iis-client--462724rjs8tc.code.run",
+                "supports_credentials": True,
+                "Access-Control-Allow-Credentials": True,
+            }
+        }
+    )
 
     download_models()
 
