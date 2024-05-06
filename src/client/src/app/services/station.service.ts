@@ -7,7 +7,7 @@ import {environment} from "../../environments/environment";
   providedIn: 'root'
 })
 export class StationService {
-  private apiUrl: string = 'https://p01--iis-api--462724rjs8tc.code.run/predict';
+  private apiUrl: string = 'https://p01--iis-api--462724rjs8tc.code.run/api/predict';
 
   constructor(
     private http: HttpClient
