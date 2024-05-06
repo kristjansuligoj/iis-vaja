@@ -70,6 +70,29 @@ def prepare_data(df, other_scaler, abs_scaler):
     return X_predict.reshape(1, X_predict.shape[1], X_predict.shape[0])
 
 
+prediction_cache = {}
+
+
+def check_cache(station_name):
+    print("Checking if predictions for this station exist in cache")
+    cache_entry = prediction_cache.get(station_name)
+
+    if cache_entry:
+        timestamp, predictions = cache_entry
+
+        if (datetime.now() - timestamp).total_seconds() < 3600:
+            return predictions
+        else:
+            del prediction_cache[station_name]
+
+    return None
+
+
+def add_to_cache(station_name, predictions):
+    print("Added predictions to cache")
+    prediction_cache[station_name] = (datetime.now(), predictions)
+
+
 def main():
     app = Flask(__name__)
     CORS(app)
@@ -79,6 +102,24 @@ def main():
     @app.route('/api/predict/<int:station_id>', methods=['GET'])
     def predict(station_id):
         station = get_station_data(station_id)
+        cache = check_cache(station['name'])
+
+        if cache:
+            print("Cache exists, returning from cache instead")
+
+            prediction = {
+                'station': station['name'],
+                'predictions': cache,
+                'date': datetime.now(),
+            }
+
+            insert_data('predictions', prediction)
+
+            return jsonify({
+                "station_name": station['name'],
+                "station_bike_stands": station['bike_stands'],
+                "predictions": cache,
+            })
 
         print(f"Predicting for station {station['name']}. . .")
 
@@ -130,6 +171,8 @@ def main():
             }
 
             insert_data('predictions', prediction)
+
+            add_to_cache(station['name'], predictions)
 
             return jsonify({
                 "station_name": station['name'],
