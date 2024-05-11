@@ -18,6 +18,9 @@ COPY . /app
 
 # Set up DVC and Dagshub
 RUN pip install dvc dvc-s3
+RUN poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+RUN poetry run dvc remote modify origin --local access_key_id $DAGSHUB_ACCESS_KEY_ID
+RUN poetry run dvc remote modify origin --local secret_access_key $DAGSHUB_SECRET_ACCESS_KEY_ID
 
 # Expose port 8080
 EXPOSE 8080
