@@ -36,6 +36,21 @@ jobs:
               username: ${{ github.actor }}
               password: ${{ secrets.GITHUB_TOKEN }}
 
+          - name: Setup DVC
+            uses: iterative/setup-dvc@v1
+            with:
+              version: '3.48.4'
+      
+          - name: Setup Dagshub
+            run: |
+              poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+              poetry run dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
+              poetry run dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
+      
+          - name: Pull data
+            run: |
+              poetry run dvc pull -r origin
+
           - name: Extract metadata (tags, labels) for Docker
             id: meta
             uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
