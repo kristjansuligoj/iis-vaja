@@ -49,6 +49,8 @@ jobs:
                push: true
                tags: ${{ steps.meta.outputs.tags }}
                labels: ${{ steps.meta.outputs.labels }}
+               dagshub_access_key_id: ${{ secrets.DAGSHUB_ACCSES_KEY_ID }}
+               dagshub_secret_access_key_id: ${{ secrets.DAGSHUB_SECRET_ACCSES_KEY_ID }}
 
           - name: Deploy to Northflank
             uses: northflank/deploy-to-northflank@v1
