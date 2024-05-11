@@ -29,6 +29,11 @@ jobs:
             with:
               ref: 'main'
 
+          - name: Write environment variables to .env file
+            run: |
+              echo "DAGSHUB_ACCSES_KEY_ID=${{ secrets.DAGSHUB_ACCSES_KEY_ID }}" >> .env
+              echo "DAGSHUB_SECRET_ACCSES_KEY_ID=${{ secrets.DAGSHUB_SECRET_ACCSES_KEY_ID }}" >> .env
+    
           - name: Log in to the Container registry
             uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
             with:
