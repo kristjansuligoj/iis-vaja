@@ -19,9 +19,6 @@ COPY . /app
 # Set up DVC and Dagshub
 RUN pip install dvc dvc-s3
 
-# Pull data from Dagshub
-RUN dvc pull -r origin
-
 # Expose port 8080
 EXPOSE 8080
 
