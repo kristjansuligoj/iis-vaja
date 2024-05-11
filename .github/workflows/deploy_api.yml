@@ -43,13 +43,13 @@ jobs:
       
           - name: Setup Dagshub
             run: |
-              poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
-              poetry run dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
-              poetry run dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
+              dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
+              dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID }}
+              dvc remote modify origin --local secret_access_key ${{ secrets.SECRET_ACCESS_KEY }}
       
           - name: Pull data
             run: |
-              poetry run dvc pull -r origin
+              dvc pull -r origin
 
           - name: Extract metadata (tags, labels) for Docker
             id: meta
