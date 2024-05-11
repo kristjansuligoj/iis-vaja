@@ -16,12 +16,6 @@ RUN poetry install --no-interaction --no-root
 # Copy the rest of the application code
 COPY . /app
 
-# Set up DVC and Dagshub
-RUN pip install dvc dvc-s3
-RUN poetry run dvc remote modify origin endpointurl https://dagshub.com/kristjansuligoj/iis-vaja.s3
-RUN poetry run dvc remote modify origin --local access_key_id 443b7bfc6bc29f1467cbcf004a21d6b596c4e3f5
-RUN poetry run dvc remote modify origin --local secret_access_key 443b7bfc6bc29f1467cbcf004a21d6b596c4e3f5
-
 # Expose port 8080
 EXPOSE 8080
 
